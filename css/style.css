@@ -533,9 +533,10 @@ textarea {
     text-transform: uppercase;
     letter-spacing: 1px;
     font-weight: 700;
-    transition: color .3s; }
+    transition: transform 0.5s, color .3s; }
     .header__link:hover {
-      color: #00ADB5; }
+      color: #00ADB5;
+      transform: scale(1.2); }
     @media only screen and (max-width: 56.25em) {
       .header__link {
         padding: 3rem 1.8rem;
