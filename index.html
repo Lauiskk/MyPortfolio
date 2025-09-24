@@ -1,444 +1,702 @@
 <!DOCTYPE html>
-<html lang="en, pt-br">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Mine Portfolio</title>
-    <meta name="description" content="Portfolio Template for Developer" />
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Luis Felipe R. Vieira | Software Engineer</title>
+    <meta name="description" content="Software Engineer specialized in Backend Development, Cloud Computing, and DevOps. Currently working at Zetti Tech with expertise in Golang, C#/.NET, and microservices.">
+    <meta name="keywords" content="Luis Felipe, Software Engineer, Backend Developer, Golang, C#, DevOps, Cloud Computing">
+    <meta name="author" content="Luis Felipe Ribeiro Vieira">
 
-    <link rel="stylesheet" href="css/style.css" />
+    <meta property="og:title" content="Luis Felipe R. Vieira | Software Engineer">
+    <meta property="og:description" content="Backend Developer & Cloud Specialist">
+    <meta property="og:image" content="./assets/png/eu.jpg">
+    <meta property="og:url" content="https://lauiskk.github.io">
 
-    <link
-      rel="shortcut icon"
-      href="./assets/favicon/favicon.ico"
-      type="image/x-icon"
-    />
+    <link rel="shortcut icon" href="./assets/favicon/favicon.ico" type="image/x-icon">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;900&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <header class="header">
-      <div class="header__content">
-        <div class="header__logo-container">
-          <div class="header__logo-img-cont">
-            <img
-              src="./assets/png/eu.jpg"
-              alt="Ram Maheshwari Logo Image"
-              class="header__logo-img"
-            />
-          </div>
-          <span class="header__logo-sub">Luis Felipe R. Vieira</span>
-        </div>
-        <div class="header__main">
-          <ul class="header__links">
-            <li class="header__link-wrapper">
-              <a href="./index.html" class="header__link"> Home </a>
-            </li>
-            <li class="header__link-wrapper">
-              <a href="./index.html#about" class="header__link">About </a>
-            </li>
-            <li class="header__link-wrapper">
-              <a href="./index.html#projects" class="header__link">
-                Projects
-              </a>
-            </li>
-            <li class="header__link-wrapper">
-              <a href="./index.html#contact" class="header__link"> Contact </a>
-            </li>
-          </ul>
-          <div class="header__main-ham-menu-cont">
-            <img
-              src="./assets/svg/ham-menu.svg"
-              alt="hamburger menu"
-              class="header__main-ham-menu"
-            />
-            <img
-              src="./assets/svg/ham-menu-close.svg"
-              alt="hamburger menu close"
-              class="header__main-ham-menu-close d-none"
-            />
-          </div>
-        </div>
-      </div>
-      <div class="header__sm-menu">
-        <div class="header__sm-menu-content">
-          <ul class="header__sm-menu-links">
-            <li class="header__sm-menu-link">
-              <a href="./index.html"> Home </a>
-            </li>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-            <li class="header__sm-menu-link">
-              <a href="./index.html#about"> About </a>
-            </li>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
-            <li class="header__sm-menu-link">
-              <a href="./index.html#projects"> Projects </a>
-            </li>
+    <link rel="stylesheet" href="css/cyberpunk-theme.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <div class="preloader" id="preloader">
+        <div class="cyber-loader">
+            <div class="loader-text" data-text="INITIALIZING...">INITIALIZING...</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+        </div>
+    </div>
 
-            <li class="header__sm-menu-link">
-              <a href="./index.html#contact"> Contact </a>
-            </li>
-          </ul>
-        </div>
-      </div>
-    </header>
-    <section class="home-hero">
-      <div class="home-hero__content">
-        <h1 class="heading-primary">Hey, My name is Luis Felipe R. Vieira</h1>
-        <div class="home-hero__info">
-          <p class="text-primary">
-            I am a Back-End / Full-Stack Developer. I'm currently working at
-            FitBank as a Back-End developer, studying Software Engineering at
-            college, always looking to learn about the world of development.
-          </p>
-        </div>
-        <div class="home-hero__cta">
-          <a href="./index.html#projects" class="btn btn--bg">Projects</a>
-        </div>
-      </div>
-      <div class="home-hero__socials">
-        <div class="home-hero__social">
-          <a
-            href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/"
-            class="home-hero__social-icon-link"
-          >
-            <img
-              src="./assets/png/linkedin-ico.png"
-              alt="icon"
-              class="home-hero__social-icon"
-            />
-          </a>
-        </div>
-        <div class="home-hero__social">
-          <a
-            href="https://github.com/Lauiskk"
-            class="home-hero__social-icon-link"
-          >
-            <img
-              src="./assets/png/github-ico.png"
-              alt="icon"
-              class="home-hero__social-icon"
-            />
-          </a>
-        </div>
-        <div class="home-hero__social">
-          <a
-            href="https://twitter.com/luisfelipe30856"
-            class="home-hero__social-icon-link"
-          >
-            <img
-              src="./assets/png/twitter-ico.png"
-              alt="icon"
-              class="home-hero__social-icon"
-            />
-          </a>
-        </div>
-        <div class="home-hero__social">
-          <a
-            href="https://www.youtube.com/channel/UCPLYp5PjSwY9a3XGPqwVYRQ"
-            class="home-hero__social-icon-link"
-          >
-            <img
-              src="./assets/png/yt-ico.png"
-              alt="icon"
-              class="home-hero__social-icon"
-            />
-          </a>
-        </div>
-        <div class="home-hero__social">
-          <a
-            href="https://www.instagram.com/vrluisin/"
-            class="home-hero__social-icon-link home-hero__social-icon-link--bd-none"
-          >
-            <img
-              src="./assets/png/insta-ico.png"
-              alt="icon"
-              class="home-hero__social-icon"
-            />
-          </a>
-        </div>
-      </div>
-      <div class="home-hero__mouse-scroll-cont">
-        <div class="mouse"></div>
-      </div>
-    </section>
-    <section id="about" class="about sec-pad">
-      <div class="main-container">
-        <h2 class="heading heading-sec heading-sec__mb-med">
-          <span class="heading-sec__main">About Me</span>
-          <span class="heading-sec__sub">
-            I'm a self-taught developer, during my life I took some courses and
-            on average I have 1 year of studies and practice. I take into
-            consideration the user experience while writing reusable and
-            efficient code. I passionately combine good design, technology, and
-            innovation in all my projects, which I like to accompany from the
-            first idea to release. Currently, I'm focused on the backend
-            development.
-          </span>
-        </h2>
-        <div class="about__content">
-          <div class="about__content-main">
-            <h3 class="about__content-title">Get to know me!</h3>
-            <div class="about__content-details">
-              <p class="about__content-details-para">
-                Hey! It's
-                <strong>Luis Felipe</strong>
-                and I'm a <strong> Back-End Developer </strong> located in
-                Goiânia - Brazil. I've done
-                <strong> remote </strong>
-                projects for my personal Portfolio, and collaborated with
-                talented people to create
-                <strong>digital products </strong>
-                for both business and consumer use.
-              </p>
-              <p class="about__content-details-para">
-                I'm a bit of a digital product junky. Over the years, I've used
-                hundreds of web and mobile apps in different projects. Feel free
-                to
-                <strong>contact</strong> me here.
-              </p>
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <span class="logo-text glitch" data-text="LF">LF</span>
+                <span class="logo-subtitle">Software Engineer</span>
             </div>
-            <a
-              href="./index.html#contact"
-              class="btn btn--med btn--theme dynamicBgClr"
-              >Contact</a
-            >
-          </div>
-          <div class="about__content-skills">
-            <h3 class="about__content-title">My Skills</h3>
-            <div class="skills">
-              <div class="skills__skill">HTML</div>
-              <div class="skills__skill">CSS</div>
-              <div class="skills__skill">JavaScript</div>
-              <div class="skills__skill">React</div>
-              <div class="skills__skill">SASS</div>
-              <div class="skills__skill">GIT</div>
-              <div class="skills__skill">Golang</div>
-              <div class="skills__skill">Groovy/Grails</div>
-              <div class="skills__skill">Network security</div>
-              <div class="skills__skill">Linux</div>
-              <div class="skills__skill">Android</div>
-              <div class="skills__skill">ReactNative</div>
-              <div class="skills__skill">Windows</div>
-              <div class="skills__skill">Scrum/Kanban</div>
-              <div class="skills__skill">Docker</div>
-              <div class="skills__skill">SQL</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="projects" class="projects sec-pad">
-      <div class="main-container">
-        <h2 class="heading heading-sec heading-sec__mb-bg">
-          <span class="heading-sec__main">Projects</span>
-          <span class="heading-sec__sub">
-            Below are some projects and some that will come too.
-          </span>
-        </h2>
 
-        <div class="projects__content">
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img
-                src="./assets/jpeg/project-mockup-example.jpeg"
-                alt="Software Screenshot"
-                class="projects__row-img"
-                loading="lazy"
-              />
+            <div class="nav-menu" id="nav-menu">
+                <ul class="nav-list">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link cyber-link">
+                            <span class="link-text">Home</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link cyber-link">
+                            <span class="link-text">About</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#experience" class="nav-link cyber-link">
+                            <span class="link-text">Experience</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#projects" class="nav-link cyber-link">
+                            <span class="link-text">Projects</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#skills" class="nav-link cyber-link">
+                            <span class="link-text">Skills</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link cyber-link">
+                            <span class="link-text">Contact</span>
+                            <span class="link-hover"></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <button class="theme-toggle" id="theme-toggle" aria-label="Toggle theme">
+                    <i class="fas fa-moon moon-icon"></i>
+                    <i class="fas fa-sun sun-icon"></i>
+                </button>
             </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Project 1</h3>
-              <p class="projects__row-content-desc">Coming soon.</p>
-              <a
-                href="./project-1.html"
-                class="btn btn--med btn--theme dynamicBgClr"
-                target="_blank"
-                >Case Study</a
-              >
-            </div>
-          </div>
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img
-                src="./assets/jpeg/project-mockup-example.jpeg"
-                alt="Software Screenshot"
-                class="projects__row-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Project 2</h3>
-              <p class="projects__row-content-desc">Coming soon.</p>
-              <a
-                href="./project-2.html"
-                class="btn btn--med btn--theme dynamicBgClr"
-                target="_blank"
-                >Case Study</a
-              >
-            </div>
-          </div>
-          <div class="projects__row">
-            <div class="projects__row-img-cont">
-              <img
-                src="./assets/jpeg/project-mockup-example.jpeg"
-                alt="Software Screenshot"
-                class="projects__row-img"
-                loading="lazy"
-              />
-            </div>
-            <div class="projects__row-content">
-              <h3 class="projects__row-content-title">Project 3</h3>
-              <p class="projects__row-content-desc">Coming soon.</p>
-              <a
-                href="./project-3.html"
-                class="btn btn--med btn--theme dynamicBgClr"
-                target="_blank"
-                >Case Study</a
-              >
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section id="contact" class="contact sec-pad dynamicBg">
-      <div class="main-container">
-        <h2 class="heading heading-sec heading-sec__mb-med">
-          <span class="heading-sec__main heading-sec__main--lt">Contact</span>
-          <span class="heading-sec__sub heading-sec__sub--lt">
-            If you want to know more about me or my work, or if you would just
-            like to say hello, send me a message. I'd love to hear from you.
-          </span>
-        </h2>
-        <div class="contact__form-container">
-          <form action="#" class="contact__form">
-            <div class="contact__form-field">
-              <label class="contact__form-label" for="name">Name</label>
-              <input
-                required
-                placeholder="Enter Your Name"
-                type="text"
-                class="contact__form-input"
-                name="name"
-                id="name"
-              />
-            </div>
-            <div class="contact__form-field">
-              <label class="contact__form-label" for="email">Email</label>
-              <input
-                required
-                placeholder="Enter Your Email"
-                type="text"
-                class="contact__form-input"
-                name="email"
-                id="email"
-              />
-            </div>
-            <div class="contact__form-field">
-              <label class="contact__form-label" for="message">Message</label>
-              <textarea
-                required
-                cols="30"
-                rows="10"
-                class="contact__form-input"
-                placeholder="Enter Your Message"
-                name="message"
-                id="message"
-              ></textarea>
-            </div>
-            <button type="submit" class="btn btn--theme contact__btn">
-              Submit
+
+            <button class="nav-toggle" id="nav-toggle" aria-label="Toggle menu">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
-          </form>
         </div>
-      </div>
-    </section>
-    <footer class="main-footer">
-      <div class="main-container">
-        <div class="main-footer__upper">
-          <div class="main-footer__row main-footer__row-1">
-            <h2 class="heading heading-sm main-footer__heading-sm">
-              <span>Social</span>
-            </h2>
-            <div class="main-footer__social-cont">
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/"
-              >
-                <img
-                  class="main-footer__icon"
-                  src="./assets/png/linkedin-ico.png"
-                  alt="icon"
-                />
-              </a>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://github.com/Lauiskk?tab=repositories"
-              >
-                <img
-                  class="main-footer__icon"
-                  src="./assets/png/github-ico.png"
-                  alt="icon"
-                />
-              </a>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://twitter.com/luisfelipe30856"
-              >
-                <img
-                  class="main-footer__icon"
-                  src="./assets/png/twitter-ico.png"
-                  alt="icon"
-                />
-              </a>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://www.youtube.com/channel/UCPLYp5PjSwY9a3XGPqwVYRQ"
-              >
-                <img
-                  class="main-footer__icon"
-                  src="./assets/png/yt-ico.png"
-                  alt="icon"
-                />
-              </a>
-              <a
-                target="_blank"
-                rel="noreferrer"
-                href="https://www.instagram.com/vrluisin/"
-              >
-                <img
-                  class="main-footer__icon main-footer__icon--mr-none"
-                  src="./assets/png/insta-ico.png"
-                  alt="icon"
-                />
-              </a>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="cyber-grid"></div>
+        <canvas id="particles"></canvas>
+
+        <div class="hero-content">
+            <div class="hero-avatar">
+                <div class="avatar-border">
+                    <img src="./assets/png/eu.jpg" alt="Luis Felipe" class="avatar-img">
+                    <div class="avatar-glow"></div>
+                </div>
             </div>
-          </div>
-          <div class="main-footer__row main-footer__row-2">
-            <h4 class="heading heading-sm text-lt">Luis Felipe</h4>
-            <p class="main-footer__short-desc">Made with ❤ and effort.</p>
-          </div>
+
+            <h1 class="hero-title">
+                <span class="greeting">Hello, I'm</span>
+                <span class="name glitch-text" data-text="Luis Felipe R. Vieira">Luis Felipe R. Vieira</span>
+            </h1>
+
+            <div class="hero-subtitle">
+                <span class="typing-text">
+                    <span class="role" id="typing-role"></span>
+                    <span class="cursor">|</span>
+                </span>
+            </div>
+
+            <p class="hero-description">
+                Crafting robust backend solutions and cloud architectures at <span class="highlight">Zetti Tech</span>.
+                Passionate about clean code, microservices, and cutting-edge technologies.
+            </p>
+
+            <div class="hero-buttons">
+                <a href="#contact" class="cyber-btn primary-btn">
+                    <span class="btn-text">Get In Touch</span>
+                    <span class="btn-glow"></span>
+                </a>
+                <a href="./assets/cv/Luis-felipe-ribeiro-vieira-CV.pdf" download class="cyber-btn secondary-btn">
+                    <i class="fas fa-download"></i>
+                    <span class="btn-text">Download CV</span>
+                </a>
+            </div>
+
+            <div class="hero-social">
+                <a href="https://github.com/Lauiskk" target="_blank" class="social-link" aria-label="GitHub">
+                    <i class="fab fa-github"></i>
+                </a>
+                <a href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/" target="_blank" class="social-link" aria-label="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="mailto:vrluis157@gmail.com" class="social-link" aria-label="Email">
+                    <i class="fas fa-envelope"></i>
+                </a>
+                <a href="https://www.instagram.com/vrluisin/" target="_blank" class="social-link" aria-label="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://www.youtube.com/channel/UCPLYp5PjSwY9a3XGPqwVYRQ" target="_blank" class="social-link" aria-label="YouTube">
+                    <i class="fab fa-youtube"></i>
+                </a>
+            </div>
         </div>
 
-        <div class="main-footer__lower">
-          &copy; copyright 2023. Made by
-          <a rel="noreferrer" target="_blank" href="https://github.com/Lauiskk"
-            >Luis Felipe</a
-          >
+        <div class="scroll-indicator">
+            <span class="scroll-text">Scroll</span>
+            <div class="scroll-arrow"></div>
         </div>
-      </div>
+    </section>
+
+    <section class="about section" id="about">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">01.</span>
+                <span class="title-text">About Me</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="about-content">
+                <div class="about-text">
+                    <p class="about-intro">
+                        I'm a <span class="highlight">Software Engineer</span> based in Goiânia, Brazil, specializing in building exceptional backend systems and cloud solutions.
+                    </p>
+
+                    <p>
+                        Currently, I work at <span class="highlight">Zetti Tech</span> as a Software Engineer III, where I develop robust microservices using <span class="highlight">Golang</span> and <span class="highlight">C#/.NET</span>, architect scalable solutions with Kubernetes and Kafka, and manage complex data systems with SQL Server.
+                    </p>
+
+                    <p>
+                        My journey in tech began with a fascination for problem-solving and has evolved into a career spanning multiple domains - from fintech at FitBank (working on J.P. Morgan projects) to cloud security at 3DB.CLOUD. I thrive on learning new technologies and applying them to create efficient, scalable solutions.
+                    </p>
+
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-code"></i>
+                            <div>
+                                <h4>Backend Development</h4>
+                                <p>Expert in Golang, C#/.NET, Java/Grails</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-cloud"></i>
+                            <div>
+                                <h4>Cloud & DevOps</h4>
+                                <p>AWS, Azure, GCP, Docker, Kubernetes</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-database"></i>
+                            <div>
+                                <h4>Data Architecture</h4>
+                                <p>SQL Server, PostgreSQL, BigQuery</p>
+                            </div>
+                        </div>
+                        <div class="highlight-item">
+                            <i class="fas fa-shield-alt"></i>
+                            <div>
+                                <h4>Security</h4>
+                                <p>Network Security, Firewalls, Cloud Security</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="about-stats">
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="4">0</div>
+                        <div class="stat-label">Years Experience</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="32">0</div>
+                        <div class="stat-label">GitHub Repos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="20">0</div>
+                        <div class="stat-label">Technologies</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" data-target="4">0</div>
+                        <div class="stat-label">Companies</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="experience section" id="experience">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">02.</span>
+                <span class="title-text">Experience</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="experience-header">
+                            <h3 class="company-name">Zetti Tech</h3>
+                            <span class="experience-date">Apr 2025 - Present</span>
+                        </div>
+                        <h4 class="position-title">Software Engineer III</h4>
+                        <p class="experience-description">
+                            Leading backend development initiatives with Golang and C#/.NET, implementing microservices architecture, and managing data systems with SQL Server.
+                        </p>
+                        <ul class="experience-highlights">
+                            <li>Developing and maintaining microservices using Golang and C#/.NET with LINQ</li>
+                            <li>Implementing Kubernetes deployments, Cron jobs, and Kafka event streaming</li>
+                            <li>Architecting data solutions with SQL Server and Docker/GitLab CI/CD</li>
+                            <li>API design and documentation with Swagger</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Golang</span>
+                            <span class="tech-tag">C#/.NET</span>
+                            <span class="tech-tag">Kubernetes</span>
+                            <span class="tech-tag">Kafka</span>
+                            <span class="tech-tag">SQL Server</span>
+                            <span class="tech-tag">Docker</span>
+                            <span class="tech-tag">GitLab</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="experience-header">
+                            <h3 class="company-name">FitBank</h3>
+                            <span class="experience-date">Mar 2024 - Apr 2025</span>
+                        </div>
+                        <h4 class="position-title">Software Engineer</h4>
+                        <p class="experience-description">
+                            Participated in developing a fintech project for J.P. Morgan, contributing to technology discovery, system architecture, and core implementation for receivables anticipation system.
+                        </p>
+                        <ul class="experience-highlights">
+                            <li>Backend development with Golang and Java/Grails</li>
+                            <li>Developed DAGs and automation bots with Python (Selenium, Airflow)</li>
+                            <li>Implemented microservices and API integrations</li>
+                            <li>Worked with Google Cloud Platform (CloudTask, BigQuery, Firebase)</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Golang</span>
+                            <span class="tech-tag">Java/Grails</span>
+                            <span class="tech-tag">Python</span>
+                            <span class="tech-tag">GCP</span>
+                            <span class="tech-tag">PostgreSQL</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">Azure</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="experience-header">
+                            <h3 class="company-name">3DB.CLOUD</h3>
+                            <span class="experience-date">Apr 2023 - Mar 2024</span>
+                        </div>
+                        <h4 class="position-title">Security Analyst</h4>
+                        <p class="experience-description">
+                            Managed network infrastructure and security systems, administered cloud environments, and implemented security measures across multiple platforms.
+                        </p>
+                        <ul class="experience-highlights">
+                            <li>Network and server administration (Windows and Linux)</li>
+                            <li>Firewall management (Fortinet, Mikrotik, PFSense, Cisco)</li>
+                            <li>Cloud administration (Oracle Cloud, AWS, Azure, Digital Ocean)</li>
+                            <li>Vulnerability management and security consulting</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span class="tech-tag">Network Security</span>
+                            <span class="tech-tag">Linux</span>
+                            <span class="tech-tag">AWS</span>
+                            <span class="tech-tag">Azure</span>
+                            <span class="tech-tag">SQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-marker"></div>
+                    <div class="timeline-content">
+                        <div class="experience-header">
+                            <h3 class="company-name">SICOOB</h3>
+                            <span class="experience-date">Sep 2021 - Dec 2022</span>
+                        </div>
+                        <h4 class="position-title">Office Assistant</h4>
+                        <p class="experience-description">
+                            Managed client data in ERP systems, handled documentation, and provided customer service while contributing to financial product development.
+                        </p>
+                        <ul class="experience-highlights">
+                            <li>ERP system management (SISBR)</li>
+                            <li>Documentation and compliance management</li>
+                            <li>Customer service and relationship management</li>
+                        </ul>
+                        <div class="tech-tags">
+                            <span class="tech-tag">ERP Systems</span>
+                            <span class="tech-tag">Customer Service</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="projects section" id="projects">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">03.</span>
+                <span class="title-text">Projects</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="projects-filter">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="backend">Backend</button>
+                <button class="filter-btn" data-filter="frontend">Frontend</button>
+                <button class="filter-btn" data-filter="fullstack">Full Stack</button>
+            </div>
+
+            <div class="projects-grid" id="projects-grid">
+                <div class="project-card skeleton">
+                    <div class="project-header">
+                        <div class="project-icon">
+                            <i class="fas fa-folder"></i>
+                        </div>
+                        <div class="project-links">
+                            <a href="#" class="project-link"><i class="fab fa-github"></i></a>
+                            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i></a>
+                        </div>
+                    </div>
+                    <h3 class="project-title">Loading...</h3>
+                    <p class="project-description">Fetching projects from GitHub...</p>
+                    <div class="project-tech">
+                        <span class="tech-item">Loading</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="view-more">
+                <a href="https://github.com/Lauiskk?tab=repositories" target="_blank" class="cyber-btn secondary-btn">
+                    <span class="btn-text">View All Projects</span>
+                    <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section class="skills section" id="skills">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">04.</span>
+                <span class="title-text">Skills & Technologies</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="skills-grid">
+                <div class="skill-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-server"></i>
+                        Backend
+                    </h3>
+                    <div class="skill-items">
+                        <div class="skill-item" data-level="90">
+                            <span class="skill-name">Golang</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="85">
+                            <span class="skill-name">C#/.NET</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="75">
+                            <span class="skill-name">Java/Grails</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="70">
+                            <span class="skill-name">Python</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-laptop-code"></i>
+                        Frontend
+                    </h3>
+                    <div class="skill-items">
+                        <div class="skill-item" data-level="75">
+                            <span class="skill-name">React</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="70">
+                            <span class="skill-name">Angular</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="85">
+                            <span class="skill-name">JavaScript</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="80">
+                            <span class="skill-name">HTML/CSS</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-cloud"></i>
+                        Cloud & DevOps
+                    </h3>
+                    <div class="skill-items">
+                        <div class="skill-item" data-level="85">
+                            <span class="skill-name">Docker</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="80">
+                            <span class="skill-name">Kubernetes</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="75">
+                            <span class="skill-name">AWS</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="70">
+                            <span class="skill-name">GCP</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3 class="category-title">
+                        <i class="fas fa-database"></i>
+                        Databases
+                    </h3>
+                    <div class="skill-items">
+                        <div class="skill-item" data-level="85">
+                            <span class="skill-name">SQL Server</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="80">
+                            <span class="skill-name">PostgreSQL</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="70">
+                            <span class="skill-name">BigQuery</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                        <div class="skill-item" data-level="75">
+                            <span class="skill-name">Firebase</span>
+                            <div class="skill-bar">
+                                <div class="skill-progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="other-skills">
+                <h3 class="category-title">Other Technologies</h3>
+                <div class="tech-cloud">
+                    <span class="tech-item">Git/GitLab</span>
+                    <span class="tech-item">Kafka</span>
+                    <span class="tech-item">gRPC</span>
+                    <span class="tech-item">Swagger</span>
+                    <span class="tech-item">Linux</span>
+                    <span class="tech-item">Scrum</span>
+                    <span class="tech-item">Microservices</span>
+                    <span class="tech-item">CI/CD</span>
+                    <span class="tech-item">Selenium</span>
+                    <span class="tech-item">Airflow</span>
+                    <span class="tech-item">Network Security</span>
+                    <span class="tech-item">LINQ</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="terminal-section section" id="terminal">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">05.</span>
+                <span class="title-text">Interactive Terminal</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="terminal">
+                <div class="terminal-header">
+                    <div class="terminal-controls">
+                        <span class="control red"></span>
+                        <span class="control yellow"></span>
+                        <span class="control green"></span>
+                    </div>
+                    <div class="terminal-title">luis@portfolio:~$</div>
+                </div>
+                <div class="terminal-body" id="terminal-body"><div class="terminal-line"><span class="terminal-prompt">Welcome to my portfolio terminal!</span></div><div class="terminal-line"><span class="terminal-prompt">Type 'help' to see available commands.</span></div><div class="terminal-line active"><span class="terminal-prompt">luis@portfolio:~$</span> <input type="text" class="terminal-input" id="terminal-input" autofocus> <span class="terminal-cursor">_</span></div></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="contact section" id="contact">
+        <div class="container">
+            <h2 class="section-title">
+                <span class="title-number">06.</span>
+                <span class="title-text">Get In Touch</span>
+                <span class="title-line"></span>
+            </h2>
+
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h3 class="contact-subtitle">Let's Connect</h3>
+                    <p class="contact-description">
+                        I'm always interested in hearing about new opportunities, challenging projects, or just having a chat about technology. Whether you have a question or just want to say hi, feel free to reach out!
+                    </p>
+
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <a href="mailto:vrluis157@gmail.com">vrluis157@gmail.com</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Phone</h4>
+                                <a href="tel:+5562998239851">+55 62 99823-9851</a>
+                            </div>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Location</h4>
+                                <span>Goiânia, Brazil</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="contact-social">
+                        <a href="https://github.com/Lauiskk" target="_blank" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin"></i>
+                        </a>
+                        <a href="https://www.instagram.com/vrluisin/" target="_blank" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                        <a href="https://twitter.com/luisfelipe30856" target="_blank" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="https://wa.me/5562998239851" target="_blank" class="social-link">
+                            <i class="fab fa-whatsapp"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="contact-form">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" required>
+                            <label for="name">Your Name</label>
+                            <span class="form-line"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" required>
+                            <label for="email">Your Email</label>
+                            <span class="form-line"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <input type="text" id="subject" name="subject" required>
+                            <label for="subject">Subject</label>
+                            <span class="form-line"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <textarea id="message" name="message" rows="5" required></textarea>
+                            <label for="message">Message</label>
+                            <span class="form-line"></span>
+                        </div>
+
+                        <button type="submit" class="cyber-btn primary-btn">
+                            <span class="btn-text">Send Message</span>
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-text">
+                    Designed & Built with <span class="heart">❤</span> by Luis Felipe R. Vieira
+                </p>
+                <p class="footer-year">© 2025</p>
+            </div>
+        </div>
     </footer>
 
-    <script src="./index.js"></script>
-  </body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/typed.js/2.0.12/typed.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script src="js/particles.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/theme-switcher.js"></script>
+    <script src="js/terminal.js"></script>
+    <script src="js/github-api.js"></script>
+    <script src="js/animations.js"></script>
+</body>
 </html>
