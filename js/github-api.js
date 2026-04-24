@@ -3,6 +3,12 @@
     const GITHUB_API_BASE = 'https://api.github.com';
     const MAX_PROJECTS = 6;
 
+    const EXCLUDED_REPOS = new Set([
+        'JobHunter',
+        'Lauiskk',
+        'MyPortfolio'
+    ]);
+
     const projectCategories = {
         'backend': ['api', 'server', 'backend', 'golang', 'java', 'python', 'grails', 'microservice'],
         'frontend': ['react', 'angular', 'vue', 'frontend', 'ui', 'website', 'portfolio'],
@@ -35,7 +41,7 @@
                 const hourAgo = Date.now() - (60 * 60 * 1000);
 
                 if (cached.timestamp > hourAgo) {
-                    githubStats.totalRepos = cached.totalRepos || 32;
+                    githubStats.totalRepos = cached.totalRepos || 34;
                     githubStats.totalStars = cached.totalStars || 0;
                     githubStats.totalForks = cached.totalForks || 0;
                     githubStats.followers = cached.followers || 0;
@@ -50,7 +56,7 @@
             showLoadingState(projectsGrid);
 
             const [userData, repos, events, orgs] = await Promise.all([
-                fetchUserData().catch(() => ({ public_repos: 32, followers: 0, following: 0 })),
+                fetchUserData().catch(() => ({ public_repos: 34, followers: 0, following: 0 })),
                 fetchGitHubRepos().catch(() => []),
                 fetchUserEvents().catch(() => []),
                 fetchUserOrganizations().catch(() => [])
@@ -66,7 +72,7 @@
             console.error('Error loading GitHub data:', error);
             displayErrorMessage(projectsGrid);
 
-            githubStats.totalRepos = 32;
+            githubStats.totalRepos = 34;
             updateAllCounters();
         }
     }
@@ -108,7 +114,7 @@
     }
 
     function updateGitHubStats(userData, repos, orgs) {
-        githubStats.totalRepos = userData.public_repos || 32;
+        githubStats.totalRepos = userData.public_repos || 34;
         githubStats.followers = userData.followers || 0;
         githubStats.following = userData.following || 0;
         githubStats.organizations = orgs || [];
@@ -137,10 +143,10 @@
         const statCards = document.querySelectorAll('.about-stats .stat-card');
 
         const updates = [
-            { index: 0, value: 4, label: 'Years Experience' },
-            { index: 1, value: githubStats.totalRepos || 32, label: 'GitHub Repos' },
-            { index: 2, value: 20, label: 'Technologies' },
-            { index: 3, value: 4, label: 'Companies' }
+            { index: 0, value: 5, label: 'Years Experience' },
+            { index: 1, value: githubStats.totalRepos || 34, label: 'GitHub Repos' },
+            { index: 2, value: 25, label: 'Technologies' },
+            { index: 3, value: 5, label: 'Companies' }
         ];
 
         updates.forEach(update => {
@@ -229,7 +235,7 @@
 
     function processRepos(repos) {
         return repos
-            .filter(repo => !repo.fork && !repo.private)
+            .filter(repo => !repo.fork && !repo.private && !EXCLUDED_REPOS.has(repo.name))
             .map(repo => ({
                 name: repo.name,
                 description: repo.description || 'No description available',

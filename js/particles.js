@@ -6,6 +6,7 @@
     const ctx = canvas.getContext('2d');
     let particles = [];
     let animationId;
+    let isRunning = true;
 
     const config = {
         particleCount: 100,
@@ -126,6 +127,7 @@
     }
 
     function animate() {
+        if (!isRunning) return;
         ctx.clearRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(particle => {
@@ -138,15 +140,21 @@
         animationId = requestAnimationFrame(animate);
     }
 
+    let resizeRaf = null;
     window.addEventListener('resize', () => {
-        resizeCanvas();
-        initParticles();
-    });
+        if (resizeRaf) cancelAnimationFrame(resizeRaf);
+        resizeRaf = requestAnimationFrame(() => {
+            adjustParticleCount();
+            resizeCanvas();
+            initParticles();
+            resizeRaf = null;
+        });
+    }, { passive: true });
 
     window.addEventListener('mousemove', (e) => {
         mouse.x = e.clientX;
         mouse.y = e.clientY;
-    });
+    }, { passive: true });
 
     window.addEventListener('mouseout', () => {
         mouse.x = null;
@@ -158,35 +166,58 @@
             mouse.x = e.touches[0].clientX;
             mouse.y = e.touches[0].clientY;
         }
-    });
+    }, { passive: true });
 
     window.addEventListener('touchend', () => {
         mouse.x = null;
         mouse.y = null;
     });
 
-    let isTabActive = true;
+    function startAnimation() {
+        if (isRunning) return;
+        isRunning = true;
+        animate();
+    }
+    function stopAnimation() {
+        if (!isRunning) return;
+        isRunning = false;
+        cancelAnimationFrame(animationId);
+    }
+
     document.addEventListener('visibilitychange', () => {
-        if (document.hidden) {
-            isTabActive = false;
-            cancelAnimationFrame(animationId);
-        } else {
-            isTabActive = true;
-            animate();
-        }
+        if (document.hidden) stopAnimation();
+        else startAnimation();
     });
 
+    const hero = document.getElementById('home');
+    if (hero && 'IntersectionObserver' in window) {
+        const heroObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) startAnimation();
+                else stopAnimation();
+            });
+        }, { threshold: 0 });
+        heroObserver.observe(hero);
+    }
+
     function adjustParticleCount() {
-        const isMobile = window.innerWidth <= 768;
-        config.particleCount = isMobile ? 50 : 100;
-        config.connectionDistance = isMobile ? 80 : 100;
+        const w = window.innerWidth;
+        if (w <= 480) {
+            config.particleCount = 30;
+            config.connectionDistance = 60;
+        } else if (w <= 768) {
+            config.particleCount = 45;
+            config.connectionDistance = 80;
+        } else {
+            config.particleCount = 75;
+            config.connectionDistance = 100;
+        }
     }
 
     canvas.addEventListener('click', (e) => {
         for (let i = 0; i < 5; i++) {
             particles.push(new Particle(e.clientX, e.clientY));
         }
-        
         if (particles.length > config.particleCount * 1.5) {
             particles.splice(0, 5);
         }

@@ -41,16 +41,16 @@
 <span style="color: var(--neon-magenta)">===[ About Me ]===</span>
 
 Name: <span style="color: var(--neon-cyan)">Luis Felipe Ribeiro Vieira</span>
-Role: <span style="color: var(--neon-cyan)">Software Engineer III at Zetti Tech</span>
+Role: <span style="color: var(--neon-cyan)">Software Engineer at SHOPNOMIX</span>
 Location: <span style="color: var(--neon-cyan)">Goiânia, Brazil</span>
-Age: <span style="color: var(--neon-cyan)">20 years old</span>
 
-I'm a passionate backend developer with expertise in building scalable
-microservices and cloud solutions. Currently working with Golang, C#/.NET,
-and various cloud technologies.
+I'm a backend & full-stack engineer with 4+ years of experience building
+AI-powered APIs, scalable backend systems, and cloud-native services.
+Currently working with Python, Golang, Elixir, Svelte, and LLM integrations.
 
-My journey in tech started with a curiosity for problem-solving and has
-evolved into a career focused on creating efficient, robust systems.
+My path runs through cloud-security, fintech (J.P. Morgan receivables
+project at FitBank), microservices at Zetti Tech, and now AI-integrated
+product work at SHOPNOMIX.
 
 Type <span style="color: var(--neon-yellow)">skills</span> to see my technical expertise.
                 `;
@@ -63,35 +63,43 @@ Type <span style="color: var(--neon-yellow)">skills</span> to see my technical e
 <span style="color: var(--neon-magenta)">===[ Technical Skills ]===</span>
 
 <span style="color: var(--neon-cyan)">Backend Development:</span>
+  • Python (Advanced)
   • Golang (Expert)
   • C#/.NET (Advanced)
-  • Java/Grails (Intermediate)
-  • Python (Intermediate)
+  • Java / Grails
+  • Elixir
+
+<span style="color: var(--neon-cyan)">AI & Automation:</span>
+  • Claude / Anthropic SDK
+  • OpenAI SDK
+  • FastAPI
+  • Playwright
+  • LLM-powered tooling
 
 <span style="color: var(--neon-cyan)">Frontend Development:</span>
-  • React.js
-  • Angular
-  • JavaScript/TypeScript
-  • HTML5/CSS3
+  • JavaScript / TypeScript
+  • Svelte
+  • React
+  • HTML5 / CSS3
 
 <span style="color: var(--neon-cyan)">Cloud & DevOps:</span>
   • Docker & Kubernetes
-  • AWS, Azure, GCP
+  • AWS, Azure, GCP, Oracle Cloud
   • CI/CD (GitLab, GitHub Actions)
   • Microservices Architecture
 
 <span style="color: var(--neon-cyan)">Databases:</span>
-  • SQL Server
   • PostgreSQL
+  • SQL Server
   • BigQuery
-  • Firebase
+  • SQLAlchemy / Alembic
 
 <span style="color: var(--neon-cyan)">Other:</span>
-  • Git/GitHub/GitLab
+  • Git / GitHub / GitLab
   • Kafka, gRPC
   • Linux Administration
   • Network Security
-  • Agile/Scrum
+  • Agile / Scrum
                 `;
             }
         },
@@ -101,24 +109,30 @@ Type <span style="color: var(--neon-yellow)">skills</span> to see my technical e
                 return `
 <span style="color: var(--neon-magenta)">===[ Work Experience ]===</span>
 
-<span style="color: var(--neon-cyan)">[2025 - Present] Software Engineer III @ Zetti Tech</span>
+<span style="color: var(--neon-cyan)">[Jul 2025 - Present] Software Engineer @ SHOPNOMIX</span>
+  • AI-powered APIs for video-processing automation
+  • Full-stack: Python / Golang / Elixir + Svelte frontends
+  • RESTful API development and third-party integrations
+  • Early-stage startup execution with clean, tested code
+
+<span style="color: var(--neon-cyan)">[Mar 2025 - Jul 2025] Software Engineer III @ Zetti Tech</span>
   • Backend development with Golang and C#/.NET
   • Microservices architecture with Kubernetes & Kafka
   • Data management with SQL Server
 
-<span style="color: var(--neon-cyan)">[2024 - 2025] Software Engineer @ FitBank</span>
-  • Developed fintech solutions for J.P. Morgan project
-  • Backend with Golang and Java/Grails
-  • Python automation (Selenium, Airflow)
-  • Google Cloud Platform integration
+<span style="color: var(--neon-cyan)">[Feb 2024 - Mar 2025] Software Engineer @ FitBank</span>
+  • Built fintech workflows for J.P. Morgan receivables project
+  • Backend with Golang, Java/Grails, and Python
+  • Python automation (Selenium, Airflow) and data pipelines
+  • Multi-cloud: AWS, Azure, GCP (CloudTask, BigQuery, Firebase)
 
-<span style="color: var(--neon-cyan)">[2023 - 2024] Security Analyst @ 3DB.CLOUD</span>
-  • Network and server administration
-  • Cloud infrastructure management
-  • Security implementation and consulting
+<span style="color: var(--neon-cyan)">[Apr 2023 - Mar 2024] Security Analyst @ 3DB.CLOUD</span>
+  • Network and server administration (Linux + Windows)
+  • Cloud infrastructure: AWS, Azure, Oracle Cloud
+  • Firewall management (Fortinet, Mikrotik, PFSense, Cisco)
 
-<span style="color: var(--neon-cyan)">[2021 - 2022] Office Assistant @ SICOOB</span>
-  • ERP system management
+<span style="color: var(--neon-cyan)">[Sep 2021 - Dec 2022] Office Assistant @ SICOOB</span>
+  • ERP system management (SISBR)
   • Customer service and documentation
                 `;
             }
@@ -148,7 +162,7 @@ Goiânia, Brazil
 <span style="color: var(--neon-cyan)">Navigating to projects section...</span>
 
 You can also visit my GitHub profile:
-<a href="https:
+<a href="https://github.com/Lauiskk" target="_blank" rel="noopener" style="color: var(--neon-yellow)">https://github.com/Lauiskk</a>
                 `;
             }
         },
@@ -163,8 +177,8 @@ You can also visit my GitHub profile:
 📍 Location: Goiânia, Brazil
 
 <span style="color: var(--neon-cyan)">Professional Networks:</span>
-  • LinkedIn: <a href="https:
-  • GitHub: <a href="https:
+  • LinkedIn: <a href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/" target="_blank" rel="noopener" style="color: var(--neon-yellow)">linkedin.com/in/luis-felipe-ribeiro-vieira</a>
+  • GitHub:   <a href="https://github.com/Lauiskk" target="_blank" rel="noopener" style="color: var(--neon-yellow)">github.com/Lauiskk</a>
 
 Type <span style="color: var(--neon-yellow)">social</span> for all social media links.
                 `;
@@ -174,14 +188,14 @@ Type <span style="color: var(--neon-yellow)">social</span> for all social media 
             description: 'Download resume',
             execute: () => {
                 const link = document.createElement('a');
-                link.href = './assets/cv/Luis-felipe-ribeiro-vieira-CV.pdf';
-                link.download = 'Luis-Felipe-Ribeiro-Vieira-CV.pdf';
+                link.href = './assets/cv/LuisFelipeRibeiroCVEN.pdf';
+                link.download = 'LuisFelipeRibeiroCVEN.pdf';
                 link.click();
                 return `
 <span style="color: var(--neon-cyan)">Downloading resume...</span>
 
 Resume download started. If it doesn't start automatically,
-<a href="./assets/cv/Luis-felipe-ribeiro-vieira-CV.pdf" download style="color: var(--neon-yellow)">click here</a>.
+<a href="./assets/cv/LuisFelipeRibeiroCVEN.pdf" download style="color: var(--neon-yellow)">click here</a>.
                 `;
             }
         },
@@ -192,14 +206,15 @@ Resume download started. If it doesn't start automatically,
 <span style="color: var(--neon-magenta)">===[ Social Media ]===</span>
 
 <span style="color: var(--neon-cyan)">Professional:</span>
-  • GitHub:    <a href="https:
-  • LinkedIn:  <a href="https:
+  • GitHub:    <a href="https://github.com/Lauiskk" target="_blank" rel="noopener" style="color: var(--neon-yellow)">github.com/Lauiskk</a>
+  • LinkedIn:  <a href="https://www.linkedin.com/in/luis-felipe-ribeiro-vieira-6a545a261/" target="_blank" rel="noopener" style="color: var(--neon-yellow)">linkedin.com/in/luis-felipe-ribeiro-vieira</a>
 
 <span style="color: var(--neon-cyan)">Personal:</span>
-  • Instagram: <a href="https:
-  • Twitter:   <a href="https:
-  • YouTube:   <a href="https:
-  • WhatsApp:  <a href="https:
+  • Instagram: <a href="https://www.instagram.com/vrluisin/" target="_blank" rel="noopener" style="color: var(--neon-yellow)">@vrluisin</a>
+  • Twitter:   <a href="https://twitter.com/luisfelipe30856" target="_blank" rel="noopener" style="color: var(--neon-yellow)">@luisfelipe30856</a>
+  • Twitch:    <a href="https://www.twitch.tv/lauiskkj" target="_blank" rel="noopener" style="color: var(--neon-yellow)">twitch.tv/lauiskkj</a>
+  • YouTube:   <a href="https://www.youtube.com/channel/UCPLYp5PjSwY9a3XGPqwVYRQ" target="_blank" rel="noopener" style="color: var(--neon-yellow)">youtube.com/@luisfelipe</a>
+  • WhatsApp:  <a href="https://wa.me/5562998239851" target="_blank" rel="noopener" style="color: var(--neon-yellow)">+55 62 99823-9851</a>
                 `;
             }
         },

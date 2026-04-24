@@ -1,16 +1,17 @@
-
 (function() {
-    
+
+    const hasFinePointer = window.matchMedia('(pointer: fine)').matches;
+    const glitchIntervals = new WeakMap();
+    const transformRaf = new WeakMap();
+
     document.addEventListener('DOMContentLoaded', function() {
         initScrollAnimations();
         initHoverEffects();
         initGlitchEffects();
         initNeonEffects();
-        initContactForm();
     });
 
     function initScrollAnimations() {
-        
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -27,6 +28,8 @@
                             child.classList.add('animated');
                         }, index * 100);
                     });
+
+                    observer.unobserve(entry.target);
                 }
             });
         }, observerOptions);
@@ -47,40 +50,46 @@
         });
     }
 
-    function initHoverEffects() {
-        
-        const magneticButtons = document.querySelectorAll('.cyber-btn');
+    function scheduleTransform(element, transform) {
+        const pending = transformRaf.get(element);
+        if (pending) cancelAnimationFrame(pending);
+        const id = requestAnimationFrame(() => {
+            element.style.transform = transform;
+            transformRaf.delete(element);
+        });
+        transformRaf.set(element, id);
+    }
 
+    function initHoverEffects() {
+        if (!hasFinePointer) return;
+
+        const magneticButtons = document.querySelectorAll('.cyber-btn');
         magneticButtons.forEach(button => {
             button.addEventListener('mousemove', (e) => {
                 const rect = button.getBoundingClientRect();
                 const x = e.clientX - rect.left - rect.width / 2;
                 const y = e.clientY - rect.top - rect.height / 2;
-
-                button.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+                scheduleTransform(button, `translate(${x * 0.2}px, ${y * 0.2}px)`);
             });
 
             button.addEventListener('mouseleave', () => {
-                button.style.transform = 'translate(0, 0)';
+                scheduleTransform(button, 'translate(0, 0)');
             });
         });
 
         const cards = document.querySelectorAll('.project-card, .stat-card, .skill-category');
-
         cards.forEach(card => {
             card.addEventListener('mousemove', (e) => {
                 const rect = card.getBoundingClientRect();
                 const x = (e.clientX - rect.left) / rect.width;
                 const y = (e.clientY - rect.top) / rect.height;
-
                 const rotateY = (x - 0.5) * 10;
                 const rotateX = (y - 0.5) * -10;
-
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`;
+                scheduleTransform(card, `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale(1.02)`);
             });
 
             card.addEventListener('mouseleave', () => {
-                card.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) scale(1)';
+                scheduleTransform(card, 'perspective(1000px) rotateX(0) rotateY(0) scale(1)');
             });
         });
     }
@@ -89,11 +98,13 @@
         const glitchElements = document.querySelectorAll('.glitch');
 
         glitchElements.forEach(element => {
-            
             const text = element.getAttribute('data-text') || element.textContent;
             element.setAttribute('data-text', text);
 
-            setInterval(() => {
+            const existing = glitchIntervals.get(element);
+            if (existing) clearInterval(existing);
+
+            const id = setInterval(() => {
                 if (Math.random() < 0.1) {
                     element.classList.add('glitch-active');
                     setTimeout(() => {
@@ -101,11 +112,13 @@
                     }, 200);
                 }
             }, 3000);
+            glitchIntervals.set(element, id);
         });
     }
 
     function initNeonEffects() {
-        
+        if (!hasFinePointer) return;
+
         const neonTexts = document.querySelectorAll('.neon-text, .section-title, h1, h2, h3');
 
         neonTexts.forEach(text => {
@@ -121,41 +134,6 @@
             text.addEventListener('mouseleave', function() {
                 this.style.textShadow = '';
             });
-        });
-    }
-
-    function initContactForm() {
-        
-        emailjs.init("YOUR_EMAILJS_PUBLIC_KEY"); 
-
-        const contactForm = document.getElementById('contact-form');
-        if (!contactForm) return;
-
-        contactForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-
-            const formData = {
-                name: document.getElementById('name').value,
-                email: document.getElementById('email').value,
-                subject: document.getElementById('subject').value,
-                message: document.getElementById('message').value
-            };
-
-            const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
-            submitBtn.disabled = true;
-
-            setTimeout(() => {
-                
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-
-                showNotification('Message sent successfully! I\'ll get back to you soon.', 'success');
-
-                contactForm.reset();
-            }, 2000);
-
         });
     }
 
@@ -273,6 +251,7 @@
         .skill-category {
             transition: transform 0.3s ease;
             transform-style: preserve-3d;
+            will-change: transform;
         }
 
         .cyber-btn {
