@@ -11,7 +11,7 @@ import tailwindcss from '@tailwindcss/vite';
  */
 const site = process.env.VERCEL_PROJECT_PRODUCTION_URL
   ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
-  : 'https://luisfelipe.vercel.app';
+  : 'https://luisfelipe-dev.vercel.app';
 
 export default defineConfig({
   site,
