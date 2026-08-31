@@ -10,7 +10,7 @@ on:
     paths: ['.github/workflows/snake.yml']
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: snake
@@ -19,12 +19,19 @@ concurrency:
 jobs:
   snake:
     runs-on: ubuntu-latest
+    # Scoped to this job rather than the workflow, so anything added later
+    # starts read-only.
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
 
       # Colours match the site palette: cyan snake eating a cyan->magenta ramp.
+      # Pinned to a commit: `@v3` is a mutable tag, and this job can push.
+      # Bump deliberately with:
+      #   gh api repos/Platane/snk/git/ref/tags/v3 --jq .object.sha
       - name: Render the snake
-        uses: Platane/snk@v3
+        uses: Platane/snk@d8f6715049803e982ee5ff501b6b9b7d5deeb09b # v3
         id: snake
         with:
           github_user_name: ${{ github.repository_owner }}
