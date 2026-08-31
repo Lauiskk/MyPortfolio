@@ -39,14 +39,23 @@ export const GET: APIRoute = async () => {
     const raw: Array<{ contributionDays: Array<{ contributionCount: number }> }> =
       body?.data?.user?.contributionsCollection?.contributionCalendar?.weeks ?? [];
 
-    // Scale counts to 0–4 against this year's own maximum, so a quiet year
-    // still produces a readable board instead of one flat colour.
-    const max = Math.max(1, ...raw.flatMap((w) => w.contributionDays.map((d) => d.contributionCount)));
-    const weeks = raw.map((week) =>
-      week.contributionDays.map((day) =>
-        day.contributionCount === 0 ? 0 : Math.max(1, Math.ceil((day.contributionCount / max) * 4)),
-      ),
-    );
+    /*
+     * Bucket into 0-4 by quartile over the *active* days, which is how GitHub
+     * shades its own calendar. Scaling linearly against the maximum instead
+     * lets a single outlier day flatten everything else onto level 1 — with
+     * this account that put 101 of 111 active days in the same shade.
+     */
+    const active = raw
+      .flatMap((w) => w.contributionDays.map((d) => d.contributionCount))
+      .filter((n) => n > 0)
+      .sort((a, b) => a - b);
+
+    const at = (q: number) => active[Math.min(active.length - 1, Math.floor(active.length * q))] ?? 0;
+    const [q1, q2, q3] = [at(0.25), at(0.5), at(0.75)];
+
+    const level = (n: number) => (n <= 0 ? 0 : n > q3 ? 4 : n > q2 ? 3 : n > q1 ? 2 : 1);
+
+    const weeks = raw.map((week) => week.contributionDays.map((day) => level(day.contributionCount)));
 
     return json({ weeks }, 3600);
   } catch {
