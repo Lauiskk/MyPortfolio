@@ -1,0 +1,18 @@
+---
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import CaseStudy from '../../components/astro/CaseStudy.astro';
+import { projects } from '../../data/projects';
+import { loc } from '../../i18n/ui';
+
+export const getStaticPaths = (() =>
+  projects.map((project) => ({ params: { slug: project.slug }, props: { project } }))) satisfies GetStaticPaths;
+
+const { project } = Astro.props;
+---
+<Base
+  title={`${project.name} — Luis Felipe R. Vieira`}
+  description={loc(project.description, 'en')}
+>
+  <CaseStudy project={project} lang="en" />
+</Base>

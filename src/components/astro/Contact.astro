@@ -1,0 +1,139 @@
+---
+import { useTranslations, loc, type Lang } from '../../i18n/ui';
+import { profile, socials } from '../../data/profile';
+import Section from './Section.astro';
+import SocialIcon from './SocialIcon.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const primary = socials.filter((s) => ['email', 'linkedin', 'whatsapp', 'github'].includes(s.id));
+---
+<Section id="contact" index="07" title={t('contact.title')} accent="cyan">
+  <div class="grid gap-5 lg:grid-cols-2">
+    <div class="panel spotlight clip-corner p-8">
+      <h3 class="mb-3 font-display text-2xl">{t('contact.lead')}</h3>
+      <p class="mb-6 text-[var(--ink-2)]">{t('contact.body')}</p>
+
+      <ul class="mb-7 space-y-3">
+        <li class="flex items-center gap-3">
+          <span class="text-[var(--accent)]"><SocialIcon name="mail" /></span>
+          <a href={`mailto:${profile.email}`} class="text-sm text-[var(--ink-2)] transition-colors hover:text-[var(--accent)]">
+            {profile.email}
+          </a>
+        </li>
+        <li class="flex items-center gap-3">
+          <span class="text-[var(--accent)]"><SocialIcon name="whatsapp" /></span>
+          <a href={`https://wa.me/${profile.phoneRaw.replace('+', '')}`} target="_blank" rel="noopener noreferrer"
+             class="text-sm text-[var(--ink-2)] transition-colors hover:text-[var(--accent)]">
+            {profile.phone}
+          </a>
+        </li>
+        <li class="flex items-center gap-3 text-sm text-[var(--ink-2)]">
+          <span class="text-[var(--accent)]"><SocialIcon name="external" /></span>
+          {loc(profile.location, lang)}
+        </li>
+      </ul>
+
+      <div class="flex flex-wrap gap-2">
+        {primary.map((s) => (
+          <a href={s.url} target={s.url.startsWith('http') ? '_blank' : undefined} rel="noopener noreferrer"
+             class="btn btn-ghost clip-corner-sm !px-4 !py-2 !text-[0.68rem]">
+            <SocialIcon name={s.icon} size={14} />
+            {s.label}
+          </a>
+        ))}
+      </div>
+
+      <p class="mt-6 border-t border-[var(--hair)] pt-4 font-mono text-[0.7rem] text-[var(--ink-3)]">
+        {t('contact.note')}
+      </p>
+    </div>
+
+    <!-- Revealed only when /api/contact reports a configured mailer. -->
+    <form class="panel spotlight clip-corner hidden flex-col gap-4 p-8" data-contact-form novalidate>
+      <div class="grid gap-4 sm:grid-cols-2">
+        <label class="block">
+          <span class="mb-1.5 block font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-3)]">
+            {t('contact.form.name')}
+          </span>
+          <input name="name" required
+                 class="w-full border border-[var(--hair)] bg-transparent px-3 py-2.5 text-sm text-[var(--ink)] outline-none transition-colors focus:border-[var(--accent)]" />
+        </label>
+        <label class="block">
+          <span class="mb-1.5 block font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-3)]">
+            {t('contact.form.email')}
+          </span>
+          <input name="email" type="email" required
+                 class="w-full border border-[var(--hair)] bg-transparent px-3 py-2.5 text-sm text-[var(--ink)] outline-none transition-colors focus:border-[var(--accent)]" />
+        </label>
+      </div>
+
+      <label class="block">
+        <span class="mb-1.5 block font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-3)]">
+          {t('contact.form.message')}
+        </span>
+        <textarea name="message" rows="5" required
+                  class="w-full resize-y border border-[var(--hair)] bg-transparent px-3 py-2.5 text-sm text-[var(--ink)] outline-none transition-colors focus:border-[var(--accent)]"></textarea>
+      </label>
+
+      <!-- Honeypot: real people never fill this. -->
+      <input name="company" tabindex="-1" autocomplete="off" aria-hidden="true"
+             class="absolute h-0 w-0 opacity-0" style="position:absolute;left:-9999px" />
+
+      <button type="submit" class="btn clip-corner self-start">{t('contact.form.send')}</button>
+      <p class="font-mono text-[0.72rem]" data-form-status role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</Section>
+
+<script>
+  import { onView } from '../../lib/motion';
+  import { play } from '../../lib/sound';
+  import { getLangFromUrl, useTranslations } from '../../i18n/ui';
+
+  onView(() => {
+    const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
+    if (!form) return;
+    const status = form.querySelector<HTMLElement>('[data-form-status]')!;
+    const button = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+    const t = useTranslations(getLangFromUrl(new URL(location.href)));
+
+    /* The form only exists if the server can actually send mail. */
+    fetch('/api/contact')
+      .then((r) => r.json())
+      .then((d) => { if (d?.enabled) { form.classList.remove('hidden'); form.classList.add('flex'); } })
+      .catch(() => {});
+
+    const onSubmit = async (e: SubmitEvent) => {
+      e.preventDefault();
+      if (!form.reportValidity()) return;
+
+      button.disabled = true;
+      status.textContent = t('contact.form.sending');
+      status.style.color = 'var(--ink-3)';
+
+      try {
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(Object.fromEntries(new FormData(form))),
+        });
+        if (!res.ok) throw new Error(String(res.status));
+        status.textContent = t('contact.form.ok');
+        status.style.color = 'var(--accent)';
+        form.reset();
+        play('confirm');
+      } catch {
+        status.textContent = t('contact.form.error');
+        status.style.color = 'var(--color-pink)';
+        play('error');
+      } finally {
+        button.disabled = false;
+      }
+    };
+
+    form.addEventListener('submit', onSubmit);
+    return () => form.removeEventListener('submit', onSubmit);
+  });
+</script>

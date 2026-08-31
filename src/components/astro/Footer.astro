@@ -1,0 +1,55 @@
+---
+import { useTranslations, type Lang } from '../../i18n/ui';
+import { profile, socials, GITHUB_USER } from '../../data/profile';
+import SocialIcon from './SocialIcon.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+const stack = ['Astro', 'React', 'Tailwind', 'GSAP', 'Vercel'];
+---
+<footer class="relative border-t border-[var(--hair)] py-14">
+  <div class="mx-auto grid max-w-[1240px] gap-10 px-5 md:grid-cols-[1fr_auto] md:items-end">
+    <div>
+      <pre class="mb-5 overflow-x-auto font-mono text-[0.72rem] leading-relaxed text-[var(--ink-3)]"><code>{`while (alive) {
+  eat(); sleep(); code(); repeat();
+}`}</code></pre>
+
+      <p class="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-[var(--ink-3)]">
+        {t('footer.built')}
+        {stack.map((s, i) => (
+          <>
+            <span class="text-[var(--ink-2)]">{s}</span>{i < stack.length - 1 ? ' · ' : ''}
+          </>
+        ))}
+      </p>
+      <p class="mt-2 font-mono text-[0.7rem] text-[var(--ink-3)]">
+        © {year} {profile.name}. {t('footer.rights')}
+      </p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-2 md:justify-end">
+      {socials.map((s) => (
+        <a
+          href={s.url}
+          target={s.url.startsWith('http') ? '_blank' : undefined}
+          rel={s.url.startsWith('http') ? 'noopener noreferrer' : undefined}
+          aria-label={s.label}
+          data-cursor-label={s.label}
+          class="grid h-10 w-10 place-items-center border border-[var(--hair)] text-[var(--ink-3)] transition-all duration-300 hover:-translate-y-1 hover:border-[var(--accent)] hover:text-[var(--accent)] hover:shadow-[0_6px_22px_-6px_var(--accent)]"
+        >
+          <SocialIcon name={s.icon} />
+        </a>
+      ))}
+      <a
+        href={`https://github.com/${GITHUB_USER}/MyPortfolio`}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="ml-1 border border-[var(--hair)] px-3 py-2.5 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[var(--ink-3)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]"
+      >
+        {t('footer.source')}
+      </a>
+    </div>
+  </div>
+</footer>

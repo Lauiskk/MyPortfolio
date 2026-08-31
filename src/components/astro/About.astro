@@ -1,0 +1,143 @@
+---
+import { useTranslations, loc, type Lang } from '../../i18n/ui';
+import { profile } from '../../data/profile';
+import { experience } from '../../data/experience';
+import Section from './Section.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const stats = [
+  { value: new Date().getFullYear() - 2022, suffix: '+', label: t('about.stats.years') },
+  { value: 36, suffix: '', label: t('about.stats.repos'), live: 'repos' },
+  { value: 6, suffix: '', label: t('about.stats.langs') },
+  { value: experience.length, suffix: '', label: t('about.stats.companies') },
+];
+---
+<Section id="about" index="01" title={t('about.title')} accent="cyan">
+  <div class="grid gap-4 md:grid-cols-6 md:grid-rows-[auto_auto]">
+    <!-- Portrait -->
+    <div class="panel spotlight clip-corner group relative overflow-hidden md:col-span-2 md:row-span-2">
+      <picture>
+        <source srcset="/img/eu.webp" type="image/webp" />
+        <img
+          src="/img/eu.jpg"
+          alt={profile.name}
+          width="400"
+          height="400"
+          loading="lazy"
+          decoding="async"
+          class="h-full min-h-[240px] w-full object-cover transition-[filter,transform] duration-700 group-hover:scale-[1.03]"
+          style="filter: grayscale(0.5) contrast(1.08);"
+        />
+      </picture>
+      <!-- Hologram tint + a scanline that sweeps on hover -->
+      <div class="pointer-events-none absolute inset-0 bg-gradient-to-t from-[var(--accent)]/22 via-transparent to-[var(--color-magenta)]/12 mix-blend-screen"></div>
+      <div class="pointer-events-none absolute inset-0 overflow-hidden opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+        <div class="h-10 w-full bg-gradient-to-b from-transparent via-[var(--accent)]/35 to-transparent"
+             style="animation: sweep-down 2.2s linear infinite;"></div>
+      </div>
+      <p class="absolute bottom-0 left-0 right-0 border-t border-[var(--hair)] bg-[var(--surface)]/80 px-4 py-2 font-mono text-[0.62rem] uppercase tracking-[0.18em] text-[var(--ink-3)] backdrop-blur">
+        {t('about.based')} {loc(profile.location, lang)}
+      </p>
+    </div>
+
+    <!-- Summary -->
+    <div class="panel spotlight clip-corner p-7 md:col-span-4">
+      <p class="text-[1.05rem] leading-relaxed text-[var(--ink-2)]">{loc(profile.summary, lang)}</p>
+    </div>
+
+    <!-- Stats -->
+    {stats.map((s) => (
+      <div class="panel spotlight clip-corner-sm flex flex-col justify-center p-5 md:col-span-1">
+        <p class="font-display text-3xl font-black text-[var(--accent)]">
+          <span data-counter data-target={s.value} data-live={s.live ?? ''}>0</span>{s.suffix}
+        </p>
+        <p class="mt-1 font-mono text-[0.62rem] uppercase leading-tight tracking-[0.12em] text-[var(--ink-3)]">
+          {s.label}
+        </p>
+      </div>
+    ))}
+
+    <!-- Education + languages -->
+    <div class="panel spotlight clip-corner grid gap-6 p-7 md:col-span-6 md:grid-cols-2">
+      <div>
+        <h3 class="mb-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[var(--accent)]">
+          {t('about.education')}
+        </h3>
+        <p class="font-display text-base">{loc(profile.education.degree, lang)}</p>
+        <p class="text-sm text-[var(--ink-2)]">{profile.education.school}</p>
+        <p class="mt-1 font-mono text-[0.7rem] text-[var(--ink-3)]">
+          {profile.education.period} · {loc(profile.education.status, lang)}
+        </p>
+      </div>
+      <div>
+        <h3 class="mb-2 font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[var(--accent)]">
+          {t('about.languages')}
+        </h3>
+        <ul class="space-y-1">
+          {profile.languages.map((l) => (
+            <li class="flex items-baseline justify-between gap-4 border-b border-[var(--hair)] pb-1">
+              <span class="text-sm">{loc(l.name, lang)}</span>
+              <span class="font-mono text-[0.7rem] text-[var(--ink-3)]">{loc(l.level, lang)}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<script>
+  import { onView, gsap, prefersReducedMotion } from '../../lib/motion';
+
+  onView(() => {
+    const counters = document.querySelectorAll<HTMLElement>('[data-counter]');
+    if (!counters.length) return;
+
+    /* Swap in the live repo count before the count-up runs. */
+    const live = [...counters].find((c) => c.dataset.live === 'repos');
+    if (live) {
+      fetch('/api/github')
+        .then((r) => r.json())
+        .then((d) => { if (typeof d?.repos === 'number') live.dataset.target = String(d.repos); })
+        .catch(() => {});
+    }
+
+    if (prefersReducedMotion()) {
+      counters.forEach((c) => (c.textContent = c.dataset.target ?? '0'));
+      return;
+    }
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const el = entry.target as HTMLElement;
+          io.unobserve(el);
+          const target = Number(el.dataset.target ?? 0);
+          const counter = { n: 0 };
+          gsap.to(counter, {
+            n: target,
+            duration: 1.6,
+            ease: 'power2.out',
+            onUpdate: () => { el.textContent = String(Math.round(counter.n)); },
+            onComplete: () => { el.textContent = String(target); },
+          });
+        }
+      },
+      { threshold: 0.5 },
+    );
+    counters.forEach((c) => io.observe(c));
+
+    /* Bento tiles stagger in. */
+    gsap.from('#about .panel', {
+      y: 24, opacity: 0, duration: 0.7, stagger: 0.06, ease: 'power3.out',
+      clearProps: 'opacity,transform',
+      scrollTrigger: { trigger: '#about', start: 'top 72%' },
+    });
+
+    return () => io.disconnect();
+  });
+</script>

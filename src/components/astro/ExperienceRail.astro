@@ -1,0 +1,142 @@
+---
+import { useTranslations, loc, type Lang } from '../../i18n/ui';
+import { experience } from '../../data/experience';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+---
+<!--
+  One section, so the #experience anchor lands on the pinned view with the
+  heading AND the cards visible. On desktop the track scrubs sideways while
+  CSS `sticky` holds the panel; below `lg`, and under reduced motion, the exact
+  same markup is a plain vertical stack.
+-->
+<section id="experience" data-accent="magenta" class="relative py-24 md:py-0">
+  <div data-rail-scroll>
+    <div class="lg:flex lg:h-screen lg:flex-col lg:justify-center lg:overflow-hidden" data-rail-panel>
+      <div class="mx-auto w-full max-w-[1240px] px-5 lg:px-[6vw]">
+        <h2 class="mb-3 flex items-center gap-4 font-display text-2xl md:text-3xl">
+          <span class="font-mono text-sm text-[var(--accent)] opacity-70">02.</span>
+          <span data-scramble data-text={t('exp.title')}>{t('exp.title')}</span>
+          <span class="rule flex flex-1 items-center" aria-hidden="true"></span>
+        </h2>
+        <p class="mb-8 hidden font-mono text-[0.68rem] uppercase tracking-[0.18em] text-[var(--ink-3)] lg:block">
+          ↓ {t('exp.hint')}
+        </p>
+      </div>
+
+      <div class="overflow-hidden">
+        <div
+          class="mx-auto flex max-w-[1240px] flex-col gap-6 px-5 lg:mx-0 lg:max-w-none lg:flex-row lg:items-stretch lg:gap-8 lg:px-[6vw] lg:will-change-transform"
+          data-rail-track
+        >
+          {experience.map((job) => (
+            <article
+              data-accent={job.accent}
+              data-rail-card
+              class="panel spotlight spotlight-glow clip-corner relative flex shrink-0 flex-col p-7 lg:w-[420px]"
+            >
+              <span class="absolute -top-px left-0 h-px w-2/3 bg-gradient-to-r from-[var(--accent)] to-transparent"></span>
+
+              <div class="mb-4 flex items-baseline justify-between gap-3">
+                <span class="font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">
+                  {job.node}
+                </span>
+                <span class="font-mono text-[0.66rem] text-[var(--ink-3)]">{job.period}</span>
+              </div>
+
+              <h3 class="font-display text-xl font-bold">{job.company}</h3>
+              <p class="mb-3 font-mono text-[0.78rem] text-[var(--accent)]">{loc(job.role, lang)}</p>
+              <p class="mb-4 text-sm leading-relaxed text-[var(--ink-2)]">{loc(job.summary, lang)}</p>
+
+              <ul class="mb-5 space-y-2">
+                {loc(job.highlights, lang).map((h) => (
+                  <li class="flex gap-2.5 text-[0.84rem] leading-relaxed text-[var(--ink-2)]">
+                    <span class="mt-[0.55em] h-1 w-1 shrink-0 bg-[var(--accent)]" aria-hidden="true"></span>
+                    <span>{h}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div class="mt-auto flex flex-wrap gap-1.5">
+                {job.tech.map((tech) => <span class="chip">{tech}</span>)}
+              </div>
+            </article>
+          ))}
+        </div>
+      </div>
+
+      <div class="mx-auto mt-10 hidden w-full max-w-[1240px] px-5 lg:block lg:px-[6vw]">
+        <div class="h-px w-full bg-[var(--hair)]">
+          <div class="h-px w-0 bg-[var(--accent)] shadow-[0_0_12px_var(--accent)]" data-rail-progress></div>
+        </div>
+        <div class="mt-3 flex justify-between font-mono text-[0.6rem] uppercase tracking-[0.2em] text-[var(--ink-3)]">
+          {experience.map((job) => <span data-rail-tick>{job.company}</span>)}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { onView, gsap, prefersReducedMotion } from '../../lib/motion';
+
+  onView(() => {
+    const scroller = document.querySelector<HTMLElement>('[data-rail-scroll]');
+    const panel = document.querySelector<HTMLElement>('[data-rail-panel]');
+    const track = document.querySelector<HTMLElement>('[data-rail-track]');
+    const progress = document.querySelector<HTMLElement>('[data-rail-progress]');
+    const ticks = [...document.querySelectorAll<HTMLElement>('[data-rail-tick]')];
+    if (!scroller || !panel || !track) return;
+
+    /* matchMedia swaps the two modes cleanly at the breakpoint and reverts
+       everything it created on the way out. */
+    const mm = gsap.matchMedia();
+
+    mm.add('(min-width: 1024px) and (prefers-reduced-motion: no-preference)', () => {
+      // How far the track must travel for its last card to reach the right edge.
+      const distance = () => Math.max(0, track.scrollWidth - window.innerWidth + window.innerWidth * 0.12);
+      // Scroll length is longer than the travel, so the cards drift rather than
+      // race. ScrollTrigger's own pin sizes the spacer to exactly this range —
+      // a hand-rolled sticky + fixed height left dead scroll after the last card.
+      const travel = () => distance() * 1.5;
+
+      gsap.to(track, {
+        x: () => -distance(),
+        ease: 'none',
+        scrollTrigger: {
+          trigger: scroller,
+          start: 'top top',
+          end: () => `+=${travel()}`,
+          pin: panel,
+          anticipatePin: 1,
+          scrub: 0.8,
+          invalidateOnRefresh: true,
+          onUpdate: (self) => {
+            if (progress) progress.style.width = `${self.progress * 100}%`;
+            const active = Math.round(self.progress * (ticks.length - 1));
+            ticks.forEach((tick, i) => {
+              tick.style.color = i === active ? 'var(--accent)' : '';
+              tick.style.opacity = i === active ? '1' : '';
+            });
+          },
+        },
+      });
+    });
+
+    mm.add('(max-width: 1023px), (prefers-reduced-motion: reduce)', () => {
+      gsap.set(track, { clearProps: 'transform' });
+      if (prefersReducedMotion()) return;
+      gsap.utils.toArray<HTMLElement>('[data-rail-card]').forEach((card) =>
+        gsap.from(card, {
+          y: 28, opacity: 0, duration: 0.6, ease: 'power3.out',
+          clearProps: 'opacity,transform',
+          scrollTrigger: { trigger: card, start: 'top 85%' },
+        }),
+      );
+    });
+
+    return () => mm.revert();
+  });
+</script>

@@ -1,0 +1,43 @@
+name: Generate contribution snake
+
+on:
+  schedule:
+    # 03:17 UTC daily — off the hour, so it is not queued behind everyone else's cron.
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/snake.yml']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: snake
+  cancel-in-progress: true
+
+jobs:
+  snake:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Colours match the site palette: cyan snake eating a cyan->magenta ramp.
+      - name: Render the snake
+        uses: Platane/snk@v3
+        id: snake
+        with:
+          github_user_name: ${{ github.repository_owner }}
+          outputs: |
+            public/snake/snake-dark.svg?palette=github-dark&color_snake=%2300ffff&color_dots=%230a0e27,%23132a52,%23005f9e,%2300a8ff,%2300ffff
+            public/snake/snake-light.svg?color_snake=%239d00ff&color_dots=%23e9edf6,%23c9b5ff,%23a678ff,%238a3dff,%237a00d4
+
+      - name: Commit if it changed
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add public/snake
+          # No diff on a quiet day; exiting 0 keeps the run green.
+          git diff --staged --quiet && echo 'snake unchanged' && exit 0
+          git commit -m 'chore: regenerate contribution snake'
+          git push

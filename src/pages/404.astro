@@ -1,0 +1,15 @@
+---
+import Base from '../layouts/Base.astro';
+import { useTranslations } from '../i18n/ui';
+const t = useTranslations('en');
+---
+<Base title="404 — Signal lost" description="That route does not exist.">
+  <section data-accent="magenta" class="mx-auto flex min-h-[70svh] max-w-[900px] flex-col justify-center px-5">
+    <p class="mb-4 font-mono text-[0.7rem] uppercase tracking-[0.24em] text-[var(--accent)]">error 404</p>
+    <h1 class="mb-4 font-display text-[clamp(2.4rem,9vw,5rem)] font-black leading-none">
+      <span data-scramble data-text={t('404.title')}>{t('404.title')}</span>
+    </h1>
+    <p class="mb-9 max-w-lg text-lg text-[var(--ink-2)]">{t('404.body')}</p>
+    <a href="/" class="btn clip-corner self-start">{t('404.home')}</a>
+  </section>
+</Base>

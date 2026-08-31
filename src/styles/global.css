@@ -1,0 +1,422 @@
+@import 'tailwindcss';
+
+/* Self-hosted, latin subset only — no third-party font requests at runtime. */
+@import '@fontsource/orbitron/latin-400.css';
+@import '@fontsource/orbitron/latin-700.css';
+@import '@fontsource/orbitron/latin-900.css';
+@import '@fontsource/rajdhani/latin-300.css';
+@import '@fontsource/rajdhani/latin-400.css';
+@import '@fontsource/rajdhani/latin-600.css';
+@import '@fontsource/rajdhani/latin-700.css';
+@import '@fontsource-variable/jetbrains-mono/wght.css';
+
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   The palette is carried over verbatim from the v1 site so the identity
+   survives the rewrite. Everything else around it is new.                   */
+@theme {
+  --color-bg: #0a0e27;
+  --color-bg-2: #151935;
+  --color-bg-3: #1a1f3a;
+
+  --color-cyan: #00ffff;
+  --color-magenta: #ff00ff;
+  --color-purple: #9d00ff;
+  --color-blue: #00a8ff;
+  --color-pink: #ff006e;
+  --color-yellow: #ffee00;
+
+  --color-fg: #ffffff;
+  --color-fg-2: #a8b2d1;
+  --color-fg-3: #8892b0;
+
+  --font-display: 'Orbitron', ui-sans-serif, system-ui, sans-serif;
+  --font-sans: 'Rajdhani', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'Courier New', monospace;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-cyber: cubic-bezier(0.7, 0, 0.2, 1);
+}
+
+/* Runtime-swappable surface variables. Kept outside @theme because the light
+   theme rewrites them, and Tailwind v4 inlines @theme values at build time. */
+:root {
+  --surface: var(--color-bg);
+  --surface-2: var(--color-bg-2);
+  --surface-3: var(--color-bg-3);
+  --ink: var(--color-fg);
+  --ink-2: var(--color-fg-2);
+  --ink-3: var(--color-fg-3);
+  --hair: rgb(255 255 255 / 0.08);
+  --glass: rgb(21 25 53 / 0.55);
+  --glow: 0 0 20px rgb(0 255 255 / 0.5);
+  --grain-opacity: 0.035;
+  --scanline-opacity: 0.035;
+
+  /* Accent, re-pointed per section and by OVERDRIVE mode. */
+  --accent: var(--color-cyan);
+  --accent-2: var(--color-magenta);
+
+  /* Hero skyline, back to front. */
+  --city-far: var(--color-purple);
+  --city-mid: var(--color-blue);
+  --city-near: var(--color-bg-3);
+  --particle: 0, 255, 255;
+
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --surface: #f4f6fb;
+  --surface-2: #ffffff;
+  --surface-3: #e9edf6;
+  --ink: #0a0e27;
+  --ink-2: #3d4663;
+  --ink-3: #5f6883;
+  --hair: rgb(10 14 39 / 0.12);
+  --glass: rgb(255 255 255 / 0.7);
+  --glow: 0 0 20px rgb(157 0 255 / 0.28);
+  --grain-opacity: 0.02;
+  --scanline-opacity: 0.015;
+  --accent: #7a00d4;
+  --accent-2: #c400a8;
+
+  /* A dark skyline on a near-white page reads as a smudge; lift it. */
+  --city-far: #cfd6ea;
+  --city-mid: #aebbdd;
+  --city-near: #8f9fc9;
+  --particle: 90, 60, 180;
+  color-scheme: light;
+}
+
+/* OVERDRIVE — the Konami reward. Shifts the whole site hot. */
+[data-overdrive='true'] {
+  --accent: var(--color-magenta);
+  --accent-2: var(--color-yellow);
+  --glow: 0 0 28px rgb(255 0 255 / 0.7);
+  --scanline-opacity: 0.08;
+}
+
+/* ── Base ─────────────────────────────────────────────────────────────── */
+@layer base {
+  * {
+    scrollbar-color: var(--accent) transparent;
+  }
+
+  html {
+    /* Lenis drives scrolling; native smooth would fight it. */
+    scroll-behavior: auto;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  body {
+    background: var(--surface);
+    color: var(--ink);
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.65;
+    overflow-x: hidden;
+    text-rendering: optimizeLegibility;
+    transition: background-color 0.4s var(--ease-out-expo), color 0.4s var(--ease-out-expo);
+  }
+
+  h1, h2, h3, h4, .font-display {
+    font-family: var(--font-display);
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    line-height: 1.1;
+  }
+
+  ::selection {
+    background: var(--accent);
+    color: var(--color-bg);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  /* Lenis needs this to avoid a scroll-jank feedback loop. */
+  html.lenis, html.lenis body { height: auto; }
+  .lenis.lenis-smooth { scroll-behavior: auto !important; }
+  .lenis.lenis-stopped { overflow: hidden; }
+}
+
+/* ── The cyberpunk kit ─────────────────────────────────────────────────── */
+@layer components {
+  /* Chamfered corners — the Cyberpunk 2077 signature. v1 had zero clip-paths;
+     this single utility does most of the visual upgrade. */
+  .clip-corner {
+    clip-path: polygon(
+      var(--cut, 14px) 0, 100% 0, 100% calc(100% - var(--cut, 14px)),
+      calc(100% - var(--cut, 14px)) 100%, 0 100%, 0 var(--cut, 14px)
+    );
+  }
+  .clip-corner-sm { --cut: 8px; }
+  .clip-corner-lg { --cut: 24px; }
+
+  /* Notch on one corner only — for tabs and chips. */
+  .clip-notch {
+    clip-path: polygon(0 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+  }
+
+  /* Glass panel with a hairline gradient border. */
+  .panel {
+    position: relative;
+    background: var(--glass);
+    backdrop-filter: blur(20px) saturate(1.2);
+    -webkit-backdrop-filter: blur(20px) saturate(1.2);
+    border: 1px solid var(--hair);
+  }
+
+  /* Cursor-following spotlight border. --mx/--my are set by lib/spotlight.ts. */
+  .spotlight {
+    position: relative;
+    isolation: isolate;
+  }
+  .spotlight::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    padding: 1px;
+    background: radial-gradient(
+      280px circle at var(--mx, 50%) var(--my, 50%),
+      var(--accent), transparent 65%
+    );
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-expo);
+    /* Border-only fill: paint the padding box, punch out the content box. */
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+  .spotlight:hover::before,
+  .spotlight:focus-within::before { opacity: 1; }
+
+  /* Same idea, but a soft glow bleeding outward instead of a border. */
+  .spotlight-glow::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    z-index: -2;
+    background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), color-mix(in oklab, var(--accent) 18%, transparent), transparent 70%);
+    opacity: 0;
+    transition: opacity 0.35s var(--ease-out-expo);
+  }
+  .spotlight-glow:hover::after { opacity: 1; }
+
+  .neon-text {
+    color: var(--accent);
+    text-shadow: 0 0 8px color-mix(in oklab, var(--accent) 70%, transparent),
+                 0 0 24px color-mix(in oklab, var(--accent) 35%, transparent);
+  }
+
+  .neon-edge {
+    box-shadow: 0 0 0 1px color-mix(in oklab, var(--accent) 55%, transparent),
+                0 0 22px -4px color-mix(in oklab, var(--accent) 60%, transparent);
+  }
+
+  /* Section heading: 01. TITLE ─────────── */
+  .rule::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent), transparent);
+  }
+
+  .btn {
+    --cut: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.85rem 1.75rem;
+    font-family: var(--font-display);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    background: color-mix(in oklab, var(--accent) 6%, transparent);
+    transition: color 0.28s var(--ease-cyber), background-color 0.28s var(--ease-cyber),
+                box-shadow 0.28s var(--ease-cyber), transform 0.28s var(--ease-cyber);
+  }
+  .btn:hover {
+    background: var(--accent);
+    color: var(--color-bg);
+    box-shadow: 0 0 28px -2px var(--accent);
+    transform: translateY(-2px);
+  }
+  .btn-ghost {
+    border-color: var(--hair);
+    color: var(--ink-2);
+    background: transparent;
+  }
+  .btn-ghost:hover {
+    border-color: var(--accent);
+    background: transparent;
+    color: var(--accent);
+    box-shadow: none;
+  }
+
+  .chip {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    color: var(--ink-2);
+    border: 1px solid var(--hair);
+    background: color-mix(in oklab, var(--surface-3) 60%, transparent);
+  }
+}
+
+/* ── Full-screen overlays ──────────────────────────────────────────────── */
+.fx-scanlines,
+.fx-grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9998;
+}
+
+.fx-scanlines {
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0 2px,
+    rgb(0 0 0 / 0.5) 2px 4px
+  );
+  opacity: var(--scanline-opacity);
+  mix-blend-mode: multiply;
+}
+
+.fx-grain {
+  opacity: var(--grain-opacity);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 0.8s steps(3) infinite;
+}
+
+/* Animated perspective grid — the synthwave horizon behind the hero. */
+.fx-grid {
+  background-image:
+    linear-gradient(color-mix(in oklab, var(--accent) 14%, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, color-mix(in oklab, var(--accent) 14%, transparent) 1px, transparent 1px);
+  background-size: 50px 50px;
+  animation: grid-drift 10s linear infinite;
+}
+
+/* ── Keyframes ─────────────────────────────────────────────────────────── */
+@keyframes grid-drift {
+  to { background-position: 50px 50px; }
+}
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  33%  { transform: translate(-2%, 1%); }
+  66%  { transform: translate(1%, -2%); }
+  100% { transform: translate(0, 0); }
+}
+@keyframes blink {
+  0%, 49%  { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklab, var(--accent) 70%, transparent); }
+  70%      { box-shadow: 0 0 0 9px transparent; }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+@keyframes sweep-down {
+  0%   { transform: translateY(-100%); }
+  100% { transform: translateY(400%); }
+}
+@keyframes glitch-x {
+  0%, 100%       { transform: translate(0); }
+  20%            { transform: translate(-2px, 1px); }
+  40%            { transform: translate(2px, -1px); }
+  60%            { transform: translate(-1px, -1px); }
+  80%            { transform: translate(1px, 1px); }
+}
+
+.animate-blink { animation: blink 1s steps(2) infinite; }
+.animate-pulse-dot { animation: pulse-dot 2s ease-out infinite; }
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+/* Chromatic split on hover — cheap, and unmistakably cyberpunk. */
+.glitch-hover:hover {
+  animation: glitch-x 0.28s steps(2) 2;
+  text-shadow: 0.03em 0 0 var(--color-magenta), -0.03em 0 0 var(--color-cyan);
+}
+
+/* ── Reduced motion ───────────────────────────────────────────────────────
+   Everything decorative stops. The site must stay fully readable — this is
+   also the fallback the horizontal rail degrades into.                      */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  .fx-grain, .fx-scanlines { display: none; }
+}
+
+/* ── Custom cursor ─────────────────────────────────────────────────────── */
+.has-cyber-cursor,
+.has-cyber-cursor a,
+.has-cyber-cursor button,
+.has-cyber-cursor [role='button'] {
+  cursor: none;
+}
+/* Text entry keeps its native caret — hiding it there is hostile. */
+.has-cyber-cursor input,
+.has-cyber-cursor textarea,
+.has-cyber-cursor select,
+.has-cyber-cursor [contenteditable] {
+  cursor: auto;
+}
+
+.cyber-cursor {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  pointer-events: none;
+  transition: opacity 0.2s linear;
+}
+.cyber-cursor__ring,
+.cyber-cursor__dot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  will-change: transform;
+}
+.cyber-cursor__ring {
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--accent);
+  box-shadow: 0 0 12px -2px var(--accent);
+  transition: width 0.25s var(--ease-out-expo), height 0.25s var(--ease-out-expo),
+              border-radius 0.25s var(--ease-out-expo), opacity 0.2s linear;
+  border-radius: 50%;
+}
+.cyber-cursor__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+/* Over a link the ring squares off into brackets around the target. */
+.cyber-cursor[data-state='link'] .cyber-cursor__ring {
+  border-radius: 0;
+  clip-path: polygon(
+    0 0, 34% 0, 34% 6%, 6% 6%, 6% 34%, 0 34%,
+    0 66%, 6% 66%, 6% 94%, 34% 94%, 34% 100%, 0 100%,
+    100% 100%, 66% 100%, 66% 94%, 94% 94%, 94% 66%, 100% 66%,
+    100% 34%, 94% 34%, 94% 6%, 66% 6%, 66% 0, 100% 0
+  );
+}
+.cyber-cursor.is-down .cyber-cursor__ring { opacity: 0.5; }

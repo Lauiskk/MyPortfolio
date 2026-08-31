@@ -1,0 +1,116 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import '../styles/global.css';
+import { getLangFromUrl, alternateFor, type Lang } from '../i18n/ui';
+import { profile, socials } from '../data/profile';
+import { themeBootScript } from '../lib/theme';
+import Nav from '../components/astro/Nav.astro';
+import Footer from '../components/astro/Footer.astro';
+import Preloader from '../components/react/Preloader.tsx';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Set false on sub-pages so the boot sequence only plays on the landing page. */
+  boot?: boolean;
+  ogImage?: string;
+}
+
+const { title, description, boot = false, ogImage = '/og-default.png' } = Astro.props;
+const lang = getLangFromUrl(Astro.url) as Lang;
+const alt = alternateFor(Astro.url, lang);
+const canonical = new URL(Astro.url.pathname, Astro.site);
+const ogUrl = new URL(ogImage, Astro.site);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  jobTitle: lang === 'pt' ? 'Engenheiro de Software' : 'Software Engineer',
+  email: `mailto:${profile.email}`,
+  telephone: profile.phoneRaw,
+  url: Astro.site?.href,
+  image: new URL('/img/eu.jpg', Astro.site).href,
+  address: { '@type': 'PostalAddress', addressLocality: 'Goiânia', addressCountry: 'BR' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: profile.education.school },
+  knowsLanguage: ['pt-BR', 'en'],
+  sameAs: socials.filter((s) => s.url.startsWith('http')).map((s) => s.url),
+};
+---
+<!doctype html>
+<html lang={lang === 'pt' ? 'pt-BR' : 'en'} data-theme="dark">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="author" content={profile.name} />
+    <meta name="theme-color" content="#0a0e27" />
+    <link rel="canonical" href={canonical} />
+    <link rel="alternate" hreflang={alt.lang === 'pt' ? 'pt-BR' : 'en'} href={new URL(alt.href, Astro.site)} />
+    <link rel="alternate" hreflang={lang === 'pt' ? 'pt-BR' : 'en'} href={canonical} />
+    <link rel="alternate" hreflang="x-default" href={new URL('/', Astro.site)} />
+
+    <link rel="icon" href="/favicon.ico" sizes="any" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogUrl} />
+    <meta property="og:locale" content={lang === 'pt' ? 'pt_BR' : 'en_US'} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogUrl} />
+
+    <!-- Applied before first paint so the light theme never flashes dark. -->
+    <script is:inline set:html={themeBootScript} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+    <ClientRouter />
+  </head>
+
+  <body>
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[10001] focus:bg-[var(--surface-2)] focus:px-4 focus:py-2 focus:text-[var(--accent)]"
+    >
+      {lang === 'pt' ? 'Pular para o conteúdo' : 'Skip to content'}
+    </a>
+
+    <div class="fx-scanlines" aria-hidden="true"></div>
+    <div class="fx-grain" aria-hidden="true"></div>
+
+    <Nav lang={lang} />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer lang={lang} />
+
+    {boot && <Preloader client:load lang={lang} />}
+
+    <script>
+      import { bootMotion, onView } from '../lib/motion';
+      import { initCursor } from '../lib/cursor';
+      import { initSpotlight } from '../lib/spotlight';
+      import { initKonami } from '../lib/konami';
+      import { initSound, play } from '../lib/sound';
+      import { scrambleOnView } from '../lib/scramble';
+
+      initSound();
+
+      // Page-scoped work — re-runs after every client-side navigation.
+      onView(() => {
+        const stops = [initCursor(), initSpotlight(), initKonami(() => play('confirm'))];
+        document
+          .querySelectorAll<HTMLElement>('[data-scramble]')
+          .forEach((el) => stops.push(scrambleOnView(el)));
+        return () => stops.forEach((stop) => stop());
+      });
+
+      bootMotion();
+    </script>
+  </body>
+</html>

@@ -1,0 +1,75 @@
+---
+import { useTranslations, loc, localizePath, type Lang } from '../../i18n/ui';
+import { projectRepoUrl, type Project } from '../../data/projects';
+import SocialIcon from './SocialIcon.astro';
+
+interface Props { project: Project; lang: Lang }
+const { project: p, lang } = Astro.props;
+const t = useTranslations(lang);
+/** *emphasis* in the body copy becomes a real <em>, not a stray asterisk. */
+const emphasise = (text: string) =>
+  text.replace(/\*(.+?)\*/g, '<em class="text-[var(--ink)] not-italic underline decoration-[var(--accent)]/50 underline-offset-4">$1</em>');
+const paragraphs = loc(p.body, lang).split('\n\n').map(emphasise);
+---
+<article data-accent={p.accent} class="mx-auto max-w-[900px] px-5 pb-24 pt-32">
+  <a
+    href={`${localizePath('/', lang)}#projects`}
+    class="mb-10 inline-block font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-3)] transition-colors hover:text-[var(--accent)]"
+  >
+    ← {t('projects.back')}
+  </a>
+
+  <header class="mb-10">
+    <p class="mb-3 font-mono text-[0.7rem] uppercase tracking-[0.2em] text-[var(--accent)]">
+      {loc(p.tagline, lang)}
+    </p>
+    <h1 class="mb-5 font-display text-[clamp(2rem,6vw,3.4rem)] font-black leading-[1.05]">
+      <span data-scramble data-text={p.name}>{p.name}</span>
+    </h1>
+    <p class="max-w-2xl text-lg leading-relaxed text-[var(--ink-2)]">{loc(p.description, lang)}</p>
+
+    <div class="mt-7 flex flex-wrap gap-3">
+      {p.live && (
+        <a href={p.live} target="_blank" rel="noopener noreferrer" class="btn clip-corner">
+          <SocialIcon name="external" size={14} /> {t('projects.live')}
+        </a>
+      )}
+      <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" class="btn btn-ghost clip-corner">
+        <SocialIcon name="github" size={14} /> {t('projects.code')}
+      </a>
+    </div>
+  </header>
+
+  <div class="panel spotlight clip-corner mb-8 p-7">
+    <h2 class="mb-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">
+      {t('projects.why')}
+    </h2>
+    <p class="text-[1.05rem] leading-relaxed">{loc(p.why, lang)}</p>
+  </div>
+
+  <div class="mb-10 space-y-5">
+    {paragraphs.map((para) => (
+      <p class="leading-relaxed text-[var(--ink-2)]" set:html={para}></p>
+    ))}
+  </div>
+
+  {p.diagram && (
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">
+        {t('projects.architecture')}
+      </h2>
+      <div class="panel clip-corner overflow-x-auto p-6">
+        <pre class="font-mono text-[0.72rem] leading-relaxed text-[var(--ink-2)]"><code>{p.diagram}</code></pre>
+      </div>
+    </section>
+  )}
+
+  <section>
+    <h2 class="mb-4 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">
+      {t('projects.stack')}
+    </h2>
+    <div class="flex flex-wrap gap-2">
+      {p.tech.map((tech) => <span class="chip !text-[0.75rem]">{tech}</span>)}
+    </div>
+  </section>
+</article>

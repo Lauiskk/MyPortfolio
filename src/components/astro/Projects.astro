@@ -1,0 +1,148 @@
+---
+import { useTranslations, loc, localizePath, type Lang } from '../../i18n/ui';
+import { projects, projectRepoUrl } from '../../data/projects';
+import { GITHUB_USER } from '../../data/profile';
+import Section from './Section.astro';
+import SocialIcon from './SocialIcon.astro';
+
+interface Props { lang: Lang }
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+const filters = [
+  { id: 'all', label: t('projects.all') },
+  { id: 'backend', label: t('projects.backend') },
+  { id: 'fullstack', label: t('projects.fullstack') },
+];
+---
+<Section id="projects" index="03" title={t('projects.title')} accent="purple">
+  <div class="mb-8 flex flex-wrap gap-2" role="tablist" aria-label={t('projects.title')}>
+    {filters.map((f, i) => (
+      <button
+        type="button"
+        role="tab"
+        data-filter={f.id}
+        aria-selected={i === 0}
+        class="clip-notch border border-[var(--hair)] px-4 py-2 font-mono text-[0.68rem] uppercase tracking-[0.14em] text-[var(--ink-3)] transition-colors aria-selected:border-[var(--accent)] aria-selected:text-[var(--accent)] hover:text-[var(--ink)]"
+      >
+        {f.label}
+      </button>
+    ))}
+  </div>
+
+  <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3" data-projects>
+    {projects.map((p) => (
+      <article
+        data-accent={p.accent}
+        data-project
+        data-category={p.category}
+        class:list={[
+          'panel spotlight spotlight-glow clip-corner group relative flex flex-col p-6 transition-transform duration-500',
+          p.featured && 'md:col-span-2 xl:col-span-1',
+        ]}
+      >
+        <span class="absolute inset-x-0 top-0 h-[2px] origin-left scale-x-0 bg-gradient-to-r from-[var(--accent)] to-transparent transition-transform duration-500 group-hover:scale-x-100"></span>
+
+        <header class="mb-3 flex items-start justify-between gap-3">
+          <div>
+            <h3 class="font-display text-lg font-bold leading-tight">{p.name}</h3>
+            <p class="mt-0.5 font-mono text-[0.68rem] text-[var(--accent)]">{loc(p.tagline, lang)}</p>
+          </div>
+          <div class="flex shrink-0 items-center gap-1.5">
+            {p.live && (
+              <a href={p.live} target="_blank" rel="noopener noreferrer" aria-label={`${p.name} — ${t('projects.live')}`}
+                 class="grid h-8 w-8 place-items-center border border-[var(--hair)] text-[var(--ink-3)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+                <SocialIcon name="external" size={14} />
+              </a>
+            )}
+            <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" aria-label={`${p.name} — ${t('projects.code')}`}
+               class="grid h-8 w-8 place-items-center border border-[var(--hair)] text-[var(--ink-3)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+              <SocialIcon name="github" size={14} />
+            </a>
+          </div>
+        </header>
+
+        {p.live && (
+          <p class="mb-3 inline-flex w-fit items-center gap-1.5 border border-[var(--accent)]/40 px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-[var(--accent)]">
+            <span class="h-1 w-1 rounded-full bg-[var(--accent)] animate-pulse-dot"></span>
+            {t('projects.live')}
+          </p>
+        )}
+
+        <p class="mb-4 flex-1 text-[0.9rem] leading-relaxed text-[var(--ink-2)]">{loc(p.description, lang)}</p>
+
+        <div class="mb-4 flex flex-wrap gap-1.5">
+          {p.tech.map((tech) => <span class="chip">{tech}</span>)}
+        </div>
+
+        <footer class="flex items-center justify-between gap-3 border-t border-[var(--hair)] pt-3">
+          <a href={localizePath(`/projects/${p.slug}`, lang)}
+             class="font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[var(--accent)] transition-opacity hover:opacity-70">
+            {t('projects.case')} →
+          </a>
+          <span class="font-mono text-[0.66rem] text-[var(--ink-3)]" data-stars={p.repo} hidden>
+            ★ <span>0</span>
+          </span>
+        </footer>
+      </article>
+    ))}
+  </div>
+
+  <div class="mt-9 text-center">
+    <a href={`https://github.com/${GITHUB_USER}?tab=repositories`} target="_blank" rel="noopener noreferrer"
+       class="btn btn-ghost clip-corner">
+      {t('projects.more')}
+    </a>
+  </div>
+</Section>
+
+<script>
+  import { onView, gsap, prefersReducedMotion } from '../../lib/motion';
+  import { play } from '../../lib/sound';
+
+  onView(() => {
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-project]')];
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    if (!cards.length) return;
+
+    const onFilter = (e: Event) => {
+      const btn = e.currentTarget as HTMLButtonElement;
+      const want = btn.dataset.filter ?? 'all';
+      buttons.forEach((b) => b.setAttribute('aria-selected', String(b === btn)));
+      play('tick');
+
+      cards.forEach((card) => {
+        const show = want === 'all' || card.dataset.category === want;
+        card.hidden = !show;
+        if (show && !prefersReducedMotion()) {
+          gsap.fromTo(card, { opacity: 0, y: 14 }, { opacity: 1, y: 0, duration: 0.4, ease: 'power2.out' });
+        }
+      });
+    };
+    buttons.forEach((b) => b.addEventListener('click', onFilter));
+
+    /* Live star counts, merged in from the cached GitHub route. */
+    fetch('/api/github')
+      .then((r) => r.json())
+      .then((data: { list?: Array<{ name: string; stars: number }> }) => {
+        for (const repo of data.list ?? []) {
+          if (repo.stars < 1) continue;
+          const el = document.querySelector<HTMLElement>(`[data-stars="${CSS.escape(repo.name)}"]`);
+          if (!el) continue;
+          el.querySelector('span')!.textContent = String(repo.stars);
+          el.hidden = false;
+        }
+      })
+      .catch(() => {});
+
+    if (!prefersReducedMotion()) {
+      gsap.from(cards, {
+        y: 30, opacity: 0, duration: 0.6, stagger: 0.06, ease: 'power3.out',
+        clearProps: 'opacity,transform',
+        scrollTrigger: { trigger: '[data-projects]', start: 'top 78%' },
+      });
+    }
+
+    return () => buttons.forEach((b) => b.removeEventListener('click', onFilter));
+  });
+</script>
