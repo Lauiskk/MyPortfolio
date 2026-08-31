@@ -28,6 +28,17 @@ export function initCursor(): () => void {
   let rx = tx, ry = ty;                             // ring (eased)
   let snap: DOMRect | null = null;
   let raf = 0;
+  let last = performance.now();
+
+  /**
+   * Exponential smoothing rates, per second. Time-based rather than per-frame:
+   * a fixed `* 0.18` each tick makes the ring track at whatever rate the
+   * display happens to run at — sluggish at 30fps, twitchy at 144Hz.
+   * FREE is high enough that the ring reads as attached to the pointer;
+   * SNAP is softer so landing on a button still feels magnetic.
+   */
+  const FREE_RATE = 34;
+  const SNAP_RATE = 20;
 
   const onMove = (e: PointerEvent) => {
     tx = e.clientX;
@@ -44,12 +55,17 @@ export function initCursor(): () => void {
     }
   };
 
-  const tick = () => {
+  const tick = (now: number) => {
+    // Clamped so a backgrounded tab does not resume with one giant jump.
+    const dt = Math.min((now - last) / 1000, 0.05);
+    last = now;
+
     // Magnetic pull: the ring settles on the element's centre, not the pointer.
     const gx = snap ? snap.left + snap.width / 2 : tx;
     const gy = snap ? snap.top + snap.height / 2 : ty;
-    rx += (gx - rx) * 0.18;
-    ry += (gy - ry) * 0.18;
+    const k = 1 - Math.exp(-(snap ? SNAP_RATE : FREE_RATE) * dt);
+    rx += (gx - rx) * k;
+    ry += (gy - ry) * k;
 
     ring.style.transform = `translate3d(${rx}px, ${ry}px, 0) translate(-50%, -50%)`;
     dot.style.transform = `translate3d(${tx}px, ${ty}px, 0) translate(-50%, -50%)`;
