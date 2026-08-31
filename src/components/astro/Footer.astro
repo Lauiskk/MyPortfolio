@@ -17,7 +17,7 @@ const stack = ['Astro', 'React', 'Tailwind', 'GSAP', 'Vercel'];
 }`}</code></pre>
 
       <p class="font-mono text-[0.7rem] uppercase tracking-[0.14em] text-[var(--ink-3)]">
-        {t('footer.built')}
+        <span>{t('footer.built')}&#32;</span>
         {stack.map((s, i) => (
           <>
             <span class="text-[var(--ink-2)]">{s}</span>{i < stack.length - 1 ? ' · ' : ''}
