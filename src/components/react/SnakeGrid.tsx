@@ -11,34 +11,21 @@ const BEST_KEY = 'snake-best';
  * Canvas has no access to CSS custom properties, so the palette is resolved
  * from the document once and re-resolved whenever the theme flips.
  */
-type Palette = { levels: string[]; head: string; body: string };
+type Palette = { empty: string; lit: string; head: string; body: string };
+
+/** Opacity per contribution level; index 0 is unused (empty has its own colour). */
+const LEVEL_ALPHA = [0, 0.28, 0.5, 0.74, 1];
 
 function readPalette(): Palette {
   const css = getComputedStyle(document.documentElement);
-  const cyan = css.getPropertyValue('--color-cyan').trim() || '#00ffff';
-  const magenta = css.getPropertyValue('--color-magenta').trim() || '#ff00ff';
-  const purple = css.getPropertyValue('--color-purple').trim() || '#9d00ff';
   const light = document.documentElement.dataset.theme === 'light';
 
   return {
-    levels: [
-      light ? 'rgba(10,14,39,0.07)' : 'rgba(255,255,255,0.055)',
-      alpha(cyan, 0.26),
-      alpha(cyan, 0.48),
-      alpha(cyan, 0.72),
-      cyan,
-    ],
-    head: magenta,
-    body: purple,
+    empty: light ? 'rgba(10,14,39,0.07)' : 'rgba(255,255,255,0.055)',
+    lit: css.getPropertyValue('--color-cyan').trim() || '#00ffff',
+    head: css.getPropertyValue('--color-magenta').trim() || '#ff00ff',
+    body: css.getPropertyValue('--color-purple').trim() || '#9d00ff',
   };
-}
-
-/** #rrggbb → rgba(). Falls back to the input for any other notation. */
-function alpha(hex: string, a: number): string {
-  const m = /^#?([\da-f]{6})$/i.exec(hex);
-  if (!m) return hex;
-  const n = parseInt(m[1], 16);
-  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${a})`;
 }
 
 type Vec = { x: number; y: number };
@@ -216,8 +203,13 @@ export default function SnakeGrid({ lang }: { lang: Lang }) {
         for (let y = 0; y < ROWS; y++) {
           const k = key(x, y);
           const level = eaten.current.has(k) ? 0 : levels.current[k] ?? 0;
-          ctx.fillStyle = palette.levels[level] ?? palette.levels[0];
+          // globalAlpha rather than a parsed rgba(): Tailwind emits --color-cyan
+          // as the shorthand #0ff, which a 6-digit hex parser silently passes
+          // through, drawing every level at full strength.
+          ctx.globalAlpha = level > 0 ? LEVEL_ALPHA[level] ?? 1 : 1;
+          ctx.fillStyle = level > 0 ? palette.lit : palette.empty;
           ctx.fillRect(at(x), at(y), cell, cell);
+          ctx.globalAlpha = 1;
         }
       }
 
