@@ -7,7 +7,7 @@
 ╚══════════════════════════════════════════════════════════════╝
 ```
 
-**[Live site](https://luisfelipe-dev.vercel.app)** · **[Português](https://luisfelipe-dev.vercel.app/pt/)**
+**[Live site](https://luisfelipe-theta.vercel.app)** · **[Português](https://luisfelipe-theta.vercel.app/pt/)**
 
 [![Astro](https://img.shields.io/badge/Astro-0a0e27?style=for-the-badge&logo=astro&logoColor=00ffff)](https://astro.build)
 [![React](https://img.shields.io/badge/React-0a0e27?style=for-the-badge&logo=react&logoColor=00a8ff)](https://react.dev)
