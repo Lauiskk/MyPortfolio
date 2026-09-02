@@ -2,6 +2,14 @@
 import { useTranslations, loc, localizePath, type Lang } from '../../i18n/ui';
 import { projectRepoUrl, type Project } from '../../data/projects';
 import SocialIcon from './SocialIcon.astro';
+import PipelinePanel from '../react/PipelinePanel';
+
+/**
+ * Set PUBLIC_VIGIL_URL to point the panel at a deployed gateway. Without it
+ * the panel replays a recorded run instead, and says so — so the page is
+ * complete whether or not the pipeline is currently deployed anywhere.
+ */
+const vigilUrl = import.meta.env.PUBLIC_VIGIL_URL as string | undefined;
 
 interface Props { project: Project; lang: Lang }
 const { project: p, lang } = Astro.props;
@@ -46,6 +54,15 @@ const paragraphs = loc(p.body, lang).split('\n\n').map(emphasise);
     </h2>
     <p class="text-[1.05rem] leading-relaxed">{loc(p.why, lang)}</p>
   </div>
+
+  {p.livePanel === 'vigil' && (
+    <section class="mb-10">
+      <h2 class="mb-4 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">
+        {t('projects.demo')}
+      </h2>
+      <PipelinePanel client:visible lang={lang} gatewayUrl={vigilUrl} />
+    </section>
+  )}
 
   <div class="mb-10 space-y-5">
     {paragraphs.map((para) => (

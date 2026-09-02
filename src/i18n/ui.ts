@@ -49,6 +49,7 @@ const en = {
   'projects.stack': 'Stack',
   'projects.back': 'Back to projects',
   'projects.architecture': 'Architecture',
+  'projects.demo': 'Live pipeline',
 
   'skills.title': 'Skills',
   'skills.hint': 'Hover a node to see where it was used',
@@ -146,6 +147,7 @@ const pt: Record<keyof typeof en, string> = {
   'projects.stack': 'Stack',
   'projects.back': 'Voltar aos projetos',
   'projects.architecture': 'Arquitetura',
+  'projects.demo': 'Pipeline ao vivo',
 
   'skills.title': 'Skills',
   'skills.hint': 'Passe o mouse num nó para ver onde foi usado',

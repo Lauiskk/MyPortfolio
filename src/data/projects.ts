@@ -18,12 +18,53 @@ export type Project = {
   live: string | null;
   /** Rendered as a small ASCII architecture panel on the case-study page. */
   diagram: string | null;
+  /**
+   * Mounts a live demo island on the case-study page. Only `vigil` exists so
+   * far; the union keeps a typo from silently rendering nothing.
+   */
+  livePanel?: 'vigil';
   accent: 'cyan' | 'magenta' | 'purple' | 'blue';
 };
 
 const repoUrl = (r: string) => `https://github.com/${GITHUB_USER}/${r}`;
 
 export const projects: Project[] = [
+  {
+    slug: 'vigil',
+    repo: 'vigil',
+    name: 'Vigil',
+    tagline: {
+      en: 'Streaming anomaly detection you can watch',
+      pt: 'Detecção de anomalias em streaming, ao vivo',
+    },
+    description: {
+      en: 'Card transactions, transcode jobs and air sensors flow into Kafka; a stateful Go processor keeps a time window per entity and flags impossible travel, card testing, stalled jobs and threshold breaches — end to end in about 25 milliseconds.',
+      pt: 'Transações de cartão, jobs de transcodificação e sensores de ar entram no Kafka; um processador Go com estado mantém uma janela de tempo por entidade e sinaliza viagem impossível, teste de cartão, jobs travados e violações de limite — ponta a ponta em cerca de 25 milissegundos.',
+    },
+    body: {
+      en: 'Kafka Streams is the obvious answer to this problem and it is *JVM-only*, so the parts it would have supplied are written here: partition-local state, sliding windows advanced by event time rather than wall clock, a grace period for records that arrive out of order, and a compacted changelog replayed on rebalance — flushed *before* offsets are committed, because a consumer that commits first acknowledges work whose state was never made durable.\n\nOne engine serves three unrelated domains. Five generic primitives — velocity, geo-velocity, z-score, stall, threshold — mean card testing in payments, a retry storm in video, and a sensor flapping in the mesh. Adding a fourth domain is configuration, not code.\n\nA Kafka Streams topology does sit beside it, in Java, doing the tumbling aggregation that is genuinely better as a library than by hand. An ADR in the repo sets out exactly which guarantees are and are not reproduced — no interactive queries, no exactly-once across topics — because a README claiming parity would be wrong, and wrong in a way anyone who knows the library would catch.\n\nThe numbers on the panel are measured, not asserted. So is the claim that ordinary traffic raises nothing: twenty-four independent ten-minute simulated runs, zero false positives. Four bugs were found by running it rather than reading it, and each left a regression test behind — the best of them a timestamp computed as *now.Add(d)*, which keeps the monotonic reading but serialises a wall-clock value that assumes the two advance at the same rate. Under NTP slew they do not, and alerts arrived detected before the events that caused them.',
+      pt: 'Kafka Streams é a resposta óbvia para esse problema e é *só para JVM*, então o que ele daria está escrito aqui: estado local por partição, janelas deslizantes avançadas por tempo de evento e não por relógio de parede, um período de tolerância para registros fora de ordem, e um changelog compactado reproduzido no rebalanceamento — gravado *antes* do commit dos offsets, porque um consumidor que faz o commit primeiro confirma um trabalho cujo estado nunca foi persistido.\n\nUm único motor atende três domínios sem relação. Cinco primitivas genéricas — velocidade, geo-velocidade, z-score, silêncio e limiar — significam teste de cartão em pagamentos, tempestade de retentativas em vídeo e um sensor oscilando na malha. Adicionar um quarto domínio é configuração, não código.\n\nUma topologia Kafka Streams roda ao lado, em Java, fazendo a agregação em janelas fixas que realmente fica melhor com a biblioteca do que na mão. Um ADR no repositório diz exatamente quais garantias são e não são reproduzidas — sem interactive queries, sem exactly-once entre tópicos — porque um README alegando paridade estaria errado, e errado de um jeito que qualquer um que conheça a biblioteca perceberia.\n\nOs números no painel são medidos, não afirmados. A afirmação de que tráfego normal não gera alerta também: vinte e quatro execuções simuladas independentes de dez minutos, zero falsos positivos. Quatro bugs apareceram rodando o sistema, não lendo o código, e cada um deixou um teste de regressão — o melhor deles um timestamp calculado como *now.Add(d)*, que preserva a leitura monotônica mas serializa um valor de relógio de parede que assume que os dois avançam no mesmo ritmo. Sob ajuste de NTP eles não avançam, e alertas chegavam detectados antes dos eventos que os causaram.',
+    },
+    why: {
+      en: 'My CV puts Kafka at the top and had nothing to click. This is that claim as running code — and the panel below is a real recorded run, not a mockup.',
+      pt: 'Meu CV coloca Kafka no topo e não tinha nada para clicar. Este é esse argumento como código rodando — e o painel abaixo é uma execução real gravada, não uma maquete.',
+    },
+    tech: ['Golang', 'Kafka', 'Kafka Streams', 'Redpanda', 'AWS Lambda', 'DynamoDB', 'Terraform', 'Java 21', 'Docker'],
+    category: 'backend',
+    featured: true,
+    live: null,
+    livePanel: 'vigil',
+    diagram: `  generator ──▶ vigil.events ──▶ processor (Go) ──┬──▶ vigil.alerts ──▶ gateway ──▶ SSE
+   3 streams                    window per key     │
+   fault API                    5 rules            ├──▶ vigil.state   compacted changelog,
+                                                   │                  replayed on rebalance
+                                                   └──▶ vigil.dlq     undecodable records
+                                     │
+        vigil.events ──▶ Kafka Streams (Java) ──▶ vigil.metrics   tumbling 10s windows
+                                     │
+                 vigil.alerts ──▶ AWS Lambda ──▶ DynamoDB   idempotent on alert id`,
+    accent: 'magenta',
+  },
   {
     slug: 'ticket-to-ride',
     repo: 'ticket-to-ride',
