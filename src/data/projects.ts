@@ -3,8 +3,20 @@ import { GITHUB_USER } from './profile';
 
 export type Project = {
   slug: string;
-  /** GitHub repo name — used to merge live stars/language from /api/github. */
-  repo: string;
+  /**
+   * GitHub repo name, or null when the source lives nowhere public.
+   * Used to merge live stars/language from /api/github, which only ever
+   * returns public non-fork repos — so a private name simply never matches.
+   */
+  repo: string | null;
+  /**
+   * Whether a visitor can actually open the source.
+   *
+   * Linking a private repo gives a signed-out reader a 404, which reads as a
+   * broken portfolio rather than as a deliberate boundary. Saying "private"
+   * costs nothing and is true.
+   */
+  visibility: 'public' | 'private' | 'unpublished';
   name: string;
   tagline: Localized;
   description: Localized;
@@ -32,6 +44,7 @@ export const projects: Project[] = [
   {
     slug: 'vigil',
     repo: 'vigil',
+    visibility: 'public',
     name: 'Vigil',
     tagline: {
       en: 'Streaming anomaly detection you can watch',
@@ -66,8 +79,45 @@ export const projects: Project[] = [
     accent: 'magenta',
   },
   {
+    slug: 'ascension',
+    repo: 'ascension',
+    visibility: 'private',
+    name: 'Ascension',
+    tagline: {
+      en: 'A tabletop character sheet that runs the rules',
+      pt: 'Uma ficha de RPG que roda as regras de verdade',
+    },
+    description: {
+      en: 'A digital sheet for the Assimilação RPG with the book\'s rules engine actually implemented — dice, the Assimilation Test, card draws and point spending by suit. Vue on the front, Phoenix and PostgreSQL behind it, and it keeps working with the network off.',
+      pt: 'Ficha digital para o RPG Assimilação com o motor de regras do livro implementado de verdade — rolagem, Teste de Assimilação, sorteio de cartas e gasto de pontos por naipe. Vue na frente, Phoenix e PostgreSQL atrás, e continua funcionando sem rede.',
+    },
+    body: {
+      en: 'It exists because the sheets that already existed reduced the Assimilation catalogue to one summary line per card — so the draw and the point spending, which are the heart of the game, were not in them at all.\n\nThe sheet is *offline-first*: everything lives in the browser and syncs upward when it can. Closing the tab, losing signal, or the free-tier backend going to sleep does not interrupt a session at the table. The rules engine is a pure module with no dependencies, and the book declares the symbol distribution of each die on page 35 — so those distributions became assertions. Mistype one face and the suite breaks.\n\nThe part worth telling is about a font. The book writes "replace any number of ◆ with ●" using icons, and in the PDF those icons are *characters in a private font*. Reading the page with the obvious API returns the letters and throws the font away, which is where "gains an A" and "spends a d" came from. Substituting letters for icons in the app cannot work either: in Portuguese `A` is also an article and `e` is also a conjunction. The difference was never in the letter, it was in the font — so the extractor marks them at the one stage that can still see it.\n\nThe book\'s prose is licensed content and is *never versioned or served*. The repository carries only the mechanical skeleton — suit, number, cost, level requirement, page number — which is enough for the app to work and not a substitute for owning the book. Anyone with the PDF generates their own datapack.',
+      pt: 'Existe porque as fichas que já havia reduziam o catálogo de Assimilações a uma linha de resumo por carta — ou seja, o sorteio e o gasto de pontos, que são o coração do jogo, não estavam nelas.\n\nA ficha é *offline-first*: tudo vive no navegador e sobe para o servidor quando dá. Fechar a aba, ficar sem rede ou o backend hibernar não interrompem uma sessão de jogo. O motor de regras é um módulo puro, sem dependências, e o livro declara a distribuição de símbolos de cada dado na página 35 — então essas distribuições viraram asserções. Digite uma face errada e a suíte quebra.\n\nA parte que vale contar é sobre uma fonte. O livro escreve "substitua qualquer quantidade de ◆ por ●" com ícones, e no PDF esses ícones são *caracteres de uma fonte própria*. Ler a página pela API óbvia devolve as letras e joga a fonte fora, e era daí que vinham os "ganha um A adicional" e "gasta um d". Trocar letras por ícones no app também não funciona: em português `A` também é artigo e `e` também é conjunção. A diferença nunca esteve na letra, e sim na fonte — então quem marca é o extrator, na única etapa que ainda a enxerga.\n\nO texto do livro é conteúdo licenciado e *nunca é versionado nem servido*. O repositório carrega só o esqueleto mecânico — naipe, número, custo, requisito de nível, página — o suficiente para o app funcionar e não um substituto para ter o livro. Quem tem o PDF gera o próprio datapack.',
+    },
+    why: {
+      en: 'The Elixir on my CV needed something larger than a side experiment behind it: a Phoenix API with invite-only accounts, syncing a client that is designed to work without it.',
+      pt: 'O Elixir do meu CV precisava de algo maior que um experimento por trás: uma API Phoenix com contas só por convite, sincronizando um cliente feito para funcionar sem ela.',
+    },
+    tech: ['Elixir', 'Phoenix', 'Vue 3', 'TypeScript', 'PostgreSQL', 'Pinia', 'Ecto', 'Vercel', 'Neon'],
+    category: 'fullstack',
+    featured: true,
+    live: 'https://ascension-eight-mu.vercel.app',
+    diagram: `  Vue 3 SPA (Vercel) ──▶ localStorage      the sheet works with no backend
+        │                     ▲
+        │  /api/* rewrite     │ cache, so it opens before the network answers
+        ▼                     │
+  Phoenix 1.8 (Render) ──▶ PostgreSQL (Neon)
+        │                    accounts by invite only, no self-signup
+        └──▶ datapack         imported once, follows the account everywhere
+
+  compartilhado/  the dice face table — one source of truth for TS and Elixir`,
+    accent: 'purple',
+  },
+  {
     slug: 'ticket-to-ride',
     repo: 'ticket-to-ride',
+    visibility: 'public',
     name: 'Ticket to Ride',
     tagline: { en: 'Events and ticketing, live in production', pt: 'Eventos e ingressos, no ar em produção' },
     description: {
@@ -96,6 +146,7 @@ export const projects: Project[] = [
   {
     slug: 'junto',
     repo: 'junto',
+    visibility: 'public',
     name: 'Junto',
     tagline: { en: 'Share a window — with its sound', pt: 'Compartilhe uma janela — com o som dela' },
     description: {
@@ -124,6 +175,7 @@ export const projects: Project[] = [
   {
     slug: 'movies-api',
     repo: 'AwesomeProject',
+    visibility: 'public',
     name: 'Movies API',
     tagline: { en: 'Go microservices over gRPC, hexagonal', pt: 'Microsserviços Go sobre gRPC, hexagonal' },
     description: {
@@ -150,8 +202,145 @@ export const projects: Project[] = [
     accent: 'purple',
   },
   {
+    slug: 'pride-vision',
+    repo: 'pride-vision-platform',
+    visibility: 'private',
+    name: 'PRIDE Vision',
+    tagline: {
+      en: 'Which vulnerability do I fix first?',
+      pt: 'Qual vulnerabilidade eu conserto primeiro?',
+    },
+    description: {
+      en: 'A security posture platform that reads Semgrep and Nuclei reports, works out which findings are the same problem seen from two sides, and ranks them by real risk. It runs no scanners of its own — it answers the question the scanners leave open.',
+      pt: 'Uma plataforma de postura de segurança que lê relatórios do Semgrep e do Nuclei, descobre quais achados são o mesmo problema visto de dois ângulos, e ordena por risco real. Não roda scanner nenhum — responde a pergunta que os scanners deixam em aberto.',
+    },
+    body: {
+      en: 'Semgrep reads source and points at suspicious lines: fast, cheap, and unable to tell you whether the line is actually reachable. Nuclei attacks the running application from outside and proves the flaw exists, but cannot tell you which line it is. At the end of the day a team has two hundred alerts, no ordering, and *the same problem under two different names* — `reflected-xss` in `src/views/busca.py` from one, "Cross Site Scripting" at a URL from the other.\n\nSo the work is correlation, not scanning. Findings are normalised, matched across the two vocabularies, deduplicated, and scored by evidence — a static finding that a dynamic probe confirmed outranks one that nothing ever reached. The category has a name in industry, *ASPM*, and the honest description of the product is that it organises application security rather than looking for holes.\n\nFastAPI and SQLAlchemy 2 behind a React front end, JWT sessions, and a deliberate default of SQLite with PostgreSQL available — because the free hosting it targets has no persistent disk. Around 270 tests.',
+      pt: 'O Semgrep lê o código-fonte e aponta trechos suspeitos: rápido, barato, e incapaz de dizer se aquele trecho está realmente exposto. O Nuclei ataca a aplicação de fora e prova que a falha existe, mas não sabe em que linha do código está. No fim do dia a equipe tem duzentos alertas, nenhuma ordem, e *o mesmo problema com dois nomes diferentes* — `reflected-xss` em `src/views/busca.py` de um lado, "Cross Site Scripting" numa URL do outro.\n\nEntão o trabalho é correlação, não varredura. Os achados são normalizados, casados entre os dois vocabulários, deduplicados e pontuados por evidência — um achado estático que uma sonda dinâmica confirmou vale mais do que um que nada nunca alcançou. A categoria tem nome no mercado, *ASPM*, e a descrição honesta do produto é que ele organiza a segurança das aplicações em vez de procurar falhas.\n\nFastAPI e SQLAlchemy 2 atrás de um front em React, sessões JWT, e um padrão deliberado de SQLite com PostgreSQL disponível — porque a hospedagem gratuita que ele mira não tem disco persistente. Cerca de 270 testes.',
+    },
+    why: {
+      en: 'I spent a year on firewalls, VPNs and hardening at 3DB.CLOUD. This is the same instinct pointed at application security, and it is the only project here where the hard part is deciding what *not* to alert on.',
+      pt: 'Passei um ano em firewalls, VPNs e hardening na 3DB.CLOUD. Este é o mesmo instinto apontado para segurança de aplicações, e é o único projeto aqui em que a parte difícil é decidir sobre o que *não* alertar.',
+    },
+    tech: ['Python', 'FastAPI', 'Semgrep', 'Nuclei', 'SQLAlchemy', 'React', 'PostgreSQL', 'JWT'],
+    category: 'fullstack',
+    featured: false,
+    live: null,
+    diagram: `  Semgrep report ──┐                     static: a line of code
+                   ├──▶ normalise ──▶ correlate ──▶ rank by evidence
+  Nuclei report ───┘                     │            confirmed  > unreachable
+     dynamic: a URL that answered        │
+                                         ▼
+                              one finding, two sources, one owner`,
+    accent: 'blue',
+  },
+  {
+    slug: 'career-os',
+    repo: 'JobHunter',
+    visibility: 'private',
+    name: 'Career OS',
+    tagline: {
+      en: 'CV generation that has to cite its evidence',
+      pt: 'Geração de currículo que precisa citar a evidência',
+    },
+    description: {
+      en: 'A multi-pass pipeline that scores how well a real history fits a job posting, then writes a CV for it — grounded in what actually happened rather than in what would read well. FastAPI and SQLAlchemy behind Next.js, with the client types generated from the server schema.',
+      pt: 'Um pipeline multi-passo que pontua o quanto uma trajetória real se encaixa numa vaga, e então escreve um currículo para ela — ancorado no que de fato aconteceu, não no que soaria bem. FastAPI e SQLAlchemy atrás de Next.js, com os tipos do cliente gerados a partir do schema do servidor.',
+    },
+    body: {
+      en: 'The interesting constraint is *evidence-grounded*. A model asked to write a CV for a posting will happily invent the experience the posting asks for. So each claim has to trace back to something in the stored history, the rubric weights are documented along with how confident they are, and a fit score that cannot be justified is a score that does not get shown.\n\nIt is also a merge of two projects that should never have been apart. One analysed a LinkedIn profile and planned content; the other matched postings and generated CVs. Keeping them separate meant two databases, two LinkedIn parsers, two GitHub fetchers and two job matchers — and they had drifted far enough that *the jobs page read a PostgreSQL table while everything that writes job records wrote to SQLite*. It was permanently empty and could not have been anything else. The merge kept the repository holding the history worth keeping, not the one with the nicer name.\n\nOne architectural rule survives it: one frontend, one backend, and the API owns the schema. The TypeScript client is generated from the server\'s own OpenAPI document, so the two cannot disagree about a field without the build saying so. Around 310 tests on the API.',
+      pt: 'A restrição interessante é ser *ancorado em evidência*. Um modelo a quem se pede um currículo para uma vaga inventa alegremente a experiência que a vaga pede. Então cada afirmação precisa remeter a algo no histórico armazenado, os pesos da rubrica são documentados junto com o quanto se confia neles, e uma nota de aderência que não dá para justificar é uma nota que não aparece.\n\nTambém é a fusão de dois projetos que nunca deveriam ter estado separados. Um analisava um perfil do LinkedIn e planejava conteúdo; o outro casava vagas e gerava currículos. Mantê-los separados significava dois bancos, dois parsers de LinkedIn, dois coletores do GitHub e dois matchers de vaga — e já tinham divergido a ponto de *a página de vagas ler uma tabela PostgreSQL enquanto tudo que escreve vaga escrevia em SQLite*. Ficava permanentemente vazia e não tinha como ser outra coisa. A fusão manteve o repositório com o histórico que valia, não o de nome mais bonito.\n\nUma regra de arquitetura sobreviveu: um frontend, um backend, e a API é dona do schema. O cliente TypeScript é gerado a partir do próprio documento OpenAPI do servidor, então os dois não conseguem discordar sobre um campo sem o build avisar. Cerca de 310 testes na API.',
+    },
+    why: {
+      en: 'Every step is a place where a language model would rather be fluent than correct. Most of the work is refusing to let it.',
+      pt: 'Cada etapa é um lugar onde um modelo de linguagem prefere ser fluente a ser correto. A maior parte do trabalho é não deixar.',
+    },
+    tech: ['Python', 'Next.js', 'FastAPI', 'React 19', 'SQLAlchemy', 'Alembic', 'OpenAPI', 'Tailwind v4'],
+    category: 'fullstack',
+    featured: false,
+    live: null,
+    diagram: `  history ──▶ parse ──▶ score against posting ──▶ draft ──▶ verify
+                          │  documented rubric        │        every claim
+                          │  weights + confidence     │        traced back
+                          ▼                           ▼        to the history
+                    a score you can argue with    a CV, plus what it leaned on
+
+  apps/api  owns the schema ──▶ OpenAPI ──▶ generated TS client (apps/web)`,
+    accent: 'cyan',
+  },
+  {
+    slug: 'prism',
+    repo: null,
+    visibility: 'unpublished',
+    name: 'Prism',
+    tagline: {
+      en: 'Reverse-engineering an ad, then rebuilding it',
+      pt: 'Engenharia reversa de um anúncio, e depois a reconstrução',
+    },
+    description: {
+      en: 'Takes an example video ad, breaks it into scenes and audio, works out the creative logic underneath, and generates new image and video variants stitched together with voiceover. Elixir and Phoenix throughout, with Broadway moving the pipeline and a ledger counting the credits.',
+      pt: 'Recebe um vídeo de anúncio como exemplo, separa cenas e áudio, deduz a lógica criativa por baixo, e gera novas variantes de imagem e vídeo costuradas com locução. Elixir e Phoenix do começo ao fim, com Broadway movendo o pipeline e um ledger contando os créditos.',
+    },
+    body: {
+      en: 'The pipeline is the project. Ingest, scene analysis, audio extraction, creative inference, generation, stitching — each stage can fail, cost money, and take minutes, which rules out doing any of it in a request. *Broadway* over a Redis stream carries the work, *Reactor* orchestrates the multi-step jobs so a failure half way through unwinds cleanly instead of leaving a half-built ad, and a double-entry *ledger* holds the credits so a generation that fails does not silently bill for itself.\n\nOTP is the reason for the language choice rather than a preference: a supervision tree is the right shape for hundreds of long-running jobs that are each allowed to die. Feature flags gate the expensive stages, and the interface is LiveView, so a job\'s progress arrives over the socket that is already open.\n\nThe CI is the strictest I write — five parallel jobs: tests against real PostgreSQL and Redis, a compile with warnings as errors, `credo --strict`, `sobelow` for security, and a formatting check. Around 1,600 tests across 147 files.',
+      pt: 'O pipeline é o projeto. Ingestão, análise de cena, extração de áudio, inferência criativa, geração, costura — cada etapa pode falhar, custar dinheiro e levar minutos, o que descarta fazer qualquer uma delas dentro de uma requisição. *Broadway* sobre um stream do Redis carrega o trabalho, *Reactor* orquestra os jobs multi-etapa para que uma falha no meio desfaça tudo limpo em vez de deixar um anúncio pela metade, e um *ledger* de partidas dobradas guarda os créditos para que uma geração que falha não se cobre em silêncio.\n\nOTP é o motivo da escolha da linguagem, não uma preferência: uma árvore de supervisão é o formato certo para centenas de jobs longos que têm permissão para morrer. Feature flags controlam as etapas caras, e a interface é LiveView, então o progresso de um job chega pelo socket que já está aberto.\n\nO CI é o mais rígido que escrevo — cinco jobs em paralelo: testes contra PostgreSQL e Redis de verdade, compilação com warnings como erro, `credo --strict`, `sobelow` para segurança, e verificação de formatação. Cerca de 1.600 testes em 147 arquivos.',
+    },
+    why: {
+      en: 'It is the argument for Elixir in one place: supervised concurrency, a streaming pipeline, and a money ledger, in a domain where every stage is slow and allowed to fail.',
+      pt: 'É o argumento a favor de Elixir num lugar só: concorrência supervisionada, um pipeline de streaming e um ledger de dinheiro, num domínio em que toda etapa é lenta e tem permissão para falhar.',
+    },
+    tech: ['Elixir', 'Phoenix LiveView', 'Broadway', 'Reactor', 'PostgreSQL', 'Redis', 'FFmpeg', 'Fly.io'],
+    category: 'backend',
+    featured: false,
+    live: null,
+    diagram: `  example ad ──▶ scenes + audio ──▶ creative inference
+                                          │
+        Broadway over a Redis stream ─────┤  each stage: slow, paid, fallible
+                                          ▼
+              image variants ──▶ video variants ──▶ stitch + voiceover
+                                          │
+                       Reactor unwinds a half-finished job cleanly
+                       ledger refuses to bill for one that failed`,
+    accent: 'magenta',
+  },
+  {
+    slug: 'gymhat',
+    repo: null,
+    visibility: 'unpublished',
+    name: 'gymHat',
+    tagline: {
+      en: 'Built around one number: 0.6 ms',
+      pt: 'Construído em torno de um número: 0,6 ms',
+    },
+    description: {
+      en: 'A training and diet log for exactly one person, running on their own machine and opening on their phone. Go and PostgreSQL behind a React client that works with the gym wifi off, and an acceptance criterion that is a latency rather than a feature.',
+      pt: 'Um diário de treino e dieta de uma pessoa só, rodando na própria máquina e abrindo no celular. Go e PostgreSQL atrás de um cliente React que funciona com o wi-fi da academia fora do ar, e um critério de aceite que é uma latência, não uma funcionalidade.',
+    },
+    body: {
+      en: 'The premise is that this is *not a form*. You open it mid-set to remember a number — what you lifted last time — not to record data. So the previous session\'s number is the largest element on the screen, and acceptance criterion number one is the time it takes to log a set. Measured in the production binary: **0.6 ms** from tap to the set on disk, with a written rule that if it ever passes three seconds, that gets fixed before anything else.\n\nThat single constraint decided the architecture. The client writes to IndexedDB first and reconciles with the server afterwards, so gym wifi is irrelevant. The Go service is `chi` and `pgx` with no ORM, because the queries are few and known. State reaches the phone over a websocket rather than by polling.\n\nThe pure packages — domain, training rules, nutrition — sit behind a *blocking 100% coverage gate* in the task runner, alongside `gofmt`, `go vet` and `-race`. They are the parts where being wrong means telling someone the wrong weight to put on a bar.',
+      pt: 'A premissa é que isto *não é um formulário*. Você abre no meio de uma série para lembrar de um número — quanto levantou da última vez — não para preencher um dado. Por isso o número da sessão anterior é o maior elemento da tela, e o critério de aceite número um é o tempo de registrar uma série. Medido no binário de produção: **0,6 ms** do toque até a série gravada no disco, com uma regra escrita de que se um dia passar de três segundos, isso se conserta antes de qualquer outra coisa.\n\nEssa única restrição decidiu a arquitetura. O cliente escreve no IndexedDB primeiro e reconcilia com o servidor depois, então o wi-fi da academia é irrelevante. O serviço Go é `chi` e `pgx` sem ORM, porque as queries são poucas e conhecidas. O estado chega ao celular por websocket, não por polling.\n\nOs pacotes puros — domínio, regras de treino, nutrição — ficam atrás de um *gate bloqueante de 100% de cobertura* no task runner, junto de `gofmt`, `go vet` e `-race`. São as partes em que estar errado significa dizer a alguém o peso errado para colocar na barra.',
+    },
+    why: {
+      en: 'Every decision in it traces back to a measured number rather than a preference, which is the only kind of argument that survives someone disagreeing with you.',
+      pt: 'Toda decisão nele remete a um número medido e não a uma preferência, que é o único tipo de argumento que sobrevive a alguém discordando de você.',
+    },
+    tech: ['Golang', 'React', 'PostgreSQL', 'pgx', 'chi', 'IndexedDB', 'WebSocket', 'Tailwind'],
+    category: 'fullstack',
+    featured: false,
+    live: null,
+    diagram: `  phone ──▶ IndexedDB ──▶ reconcile ──▶ Go (chi + pgx) ──▶ PostgreSQL
+              │  writes land here first — gym wifi is not a dependency
+              ▼
+        0.6 ms  tap to disk, measured in the production binary
+                if it ever exceeds 3 s, that is the next thing fixed
+
+  task check ──▶ gofmt · vet · -race · 100% on domain, rules, nutrition`,
+    accent: 'blue',
+  },
+  {
     slug: 'cronus',
     repo: 'cronus',
+    visibility: 'public',
     name: 'Cronus',
     tagline: { en: 'Elixir / Phoenix service', pt: 'Serviço em Elixir / Phoenix' },
     description: {
@@ -176,6 +365,7 @@ export const projects: Project[] = [
   {
     slug: 'lru-cache',
     repo: 'Cache-LRU-challenge',
+    visibility: 'public',
     name: 'LRU Cache',
     tagline: { en: 'O(1) get and put, from scratch in Go', pt: 'get e put em O(1), do zero em Go' },
     description: {
@@ -197,6 +387,7 @@ export const projects: Project[] = [
   {
     slug: 'blockchain',
     repo: 'BlockChain',
+    visibility: 'public',
     name: 'Blockchain',
     tagline: { en: 'A chain, hashed and validated, in Go', pt: 'Uma cadeia, com hash e validação, em Go' },
     description: {
@@ -219,4 +410,6 @@ export const projects: Project[] = [
 
 export const featuredProjects = projects.filter((p) => p.featured);
 export const projectBySlug = (slug: string) => projects.find((p) => p.slug === slug);
-export const projectRepoUrl = (p: Project) => repoUrl(p.repo);
+/** The repo URL, or null when there is nothing a visitor could open. */
+export const projectRepoUrl = (p: Project) =>
+  p.repo && p.visibility === 'public' ? repoUrl(p.repo) : null;

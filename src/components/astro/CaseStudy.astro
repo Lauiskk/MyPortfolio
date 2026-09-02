@@ -42,11 +42,24 @@ const paragraphs = loc(p.body, lang).split('\n\n').map(emphasise);
           <SocialIcon name="external" size={14} /> {t('projects.live')}
         </a>
       )}
-      <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" class="btn btn-ghost clip-corner">
-        <SocialIcon name="github" size={14} /> {t('projects.code')}
-      </a>
+      {projectRepoUrl(p) ? (
+        <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" class="btn btn-ghost clip-corner">
+          <SocialIcon name="github" size={14} /> {t('projects.code')}
+        </a>
+      ) : (
+        <span class="btn btn-ghost clip-corner cursor-default border-dashed opacity-70">
+          <SocialIcon name="lock" size={14} />
+          {t(p.visibility === 'private' ? 'projects.private' : 'projects.unpublished')}
+        </span>
+      )}
     </div>
   </header>
+
+  {p.visibility !== 'public' && (
+    <p class="mb-8 border-l-2 border-dashed border-[var(--hair)] pl-4 font-mono text-[0.72rem] leading-relaxed text-[var(--ink-3)]">
+      {t(p.live ? 'projects.noSourceLive' : 'projects.noSource')}
+    </p>
+  )}
 
   <div class="panel spotlight clip-corner mb-8 p-7">
     <h2 class="mb-2 font-mono text-[0.62rem] uppercase tracking-[0.22em] text-[var(--accent)]">

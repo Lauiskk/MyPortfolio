@@ -50,6 +50,10 @@ const en = {
   'projects.back': 'Back to projects',
   'projects.architecture': 'Architecture',
   'projects.demo': 'Live pipeline',
+  'projects.private': 'Private repository',
+  'projects.unpublished': 'Source not published',
+  'projects.noSource': 'The source is not public. Everything below is described from the work itself.',
+  'projects.noSourceLive': 'The source is not public, but the thing it builds is — the link above opens it.',
 
   'skills.title': 'Skills',
   'skills.hint': 'Hover a node to see where it was used',
@@ -148,6 +152,10 @@ const pt: Record<keyof typeof en, string> = {
   'projects.back': 'Voltar aos projetos',
   'projects.architecture': 'Arquitetura',
   'projects.demo': 'Pipeline ao vivo',
+  'projects.private': 'Repositório privado',
+  'projects.unpublished': 'Código não publicado',
+  'projects.noSource': 'O código não é público. Tudo abaixo é descrito a partir do próprio trabalho.',
+  'projects.noSourceLive': 'O código não é público, mas o que ele constrói é — o link acima abre.',
 
   'skills.title': 'Skills',
   'skills.hint': 'Passe o mouse num nó para ver onde foi usado',

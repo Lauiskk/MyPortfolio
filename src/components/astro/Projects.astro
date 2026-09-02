@@ -55,12 +55,28 @@ const filters = [
                 <SocialIcon name="external" size={14} />
               </a>
             )}
-            <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" aria-label={`${p.name} — ${t('projects.code')}`}
-               class="grid h-8 w-8 place-items-center border border-[var(--hair)] text-[var(--ink-3)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
-              <SocialIcon name="github" size={14} />
-            </a>
+            {projectRepoUrl(p) ? (
+              <a href={projectRepoUrl(p)} target="_blank" rel="noopener noreferrer" aria-label={`${p.name} — ${t('projects.code')}`}
+                 class="grid h-8 w-8 place-items-center border border-[var(--hair)] text-[var(--ink-3)] transition-colors hover:border-[var(--accent)] hover:text-[var(--accent)]">
+                <SocialIcon name="github" size={14} />
+              </a>
+            ) : (
+              <span
+                title={t(p.visibility === 'private' ? 'projects.private' : 'projects.unpublished')}
+                aria-label={t(p.visibility === 'private' ? 'projects.private' : 'projects.unpublished')}
+                class="grid h-8 w-8 place-items-center border border-dashed border-[var(--hair)] text-[var(--ink-3)]"
+              >
+                <SocialIcon name="lock" size={13} />
+              </span>
+            )}
           </div>
         </header>
+
+        {!p.live && p.visibility !== 'public' && (
+          <p class="mb-3 inline-flex w-fit items-center gap-1.5 border border-dashed border-[var(--hair)] px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-[var(--ink-3)]">
+            {t(p.visibility === 'private' ? 'projects.private' : 'projects.unpublished')}
+          </p>
+        )}
 
         {p.live && (
           <p class="mb-3 inline-flex w-fit items-center gap-1.5 border border-[var(--accent)]/40 px-2 py-0.5 font-mono text-[0.58rem] uppercase tracking-[0.16em] text-[var(--accent)]">
