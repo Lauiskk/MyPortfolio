@@ -12,7 +12,7 @@ export const TWITCH_USER = 'lauiskkj';
  * every message you have ever sent. Requires the account to be a member of
  * https://discord.gg/lanyard; leave it empty and the section is not built.
  */
-export const DISCORD_USER_ID: string = '';
+export const DISCORD_USER_ID: string = '337764859955642378';
 
 export const profile = {
   name: 'Luis Felipe Ribeiro Vieira',
