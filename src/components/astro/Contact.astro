@@ -4,12 +4,12 @@ import { profile, socials } from '../../data/profile';
 import Section from './Section.astro';
 import SocialIcon from './SocialIcon.astro';
 
-interface Props { lang: Lang }
-const { lang } = Astro.props;
+interface Props { lang: Lang; index?: string }
+const { lang, index = '07' } = Astro.props;
 const t = useTranslations(lang);
 const primary = socials.filter((s) => ['email', 'linkedin', 'whatsapp', 'github'].includes(s.id));
 ---
-<Section id="contact" index="07" title={t('contact.title')} accent="cyan">
+<Section id="contact" index={index} title={t('contact.title')} accent="cyan">
   <div class="grid gap-5 lg:grid-cols-2">
     <div class="panel spotlight clip-corner p-8">
       <h3 class="mb-3 font-display text-2xl">{t('contact.lead')}</h3>

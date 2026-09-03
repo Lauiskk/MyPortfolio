@@ -10,6 +10,7 @@ const en = {
   'nav.skills': 'Skills',
   'nav.snake': 'Snake',
   'nav.terminal': 'Terminal',
+  'nav.now': 'Now',
   'nav.contact': 'Contact',
   'nav.menu': 'Menu',
   'nav.theme': 'Toggle theme',
@@ -73,6 +74,10 @@ const en = {
   'terminal.title': 'Terminal',
   'terminal.lead': "Type <code>help</code>. There are things in here that are not in the menu.",
 
+  'now.title': 'Now',
+  'now.lead':
+    'Straight off my Discord presence, pushed over a socket. If it says I am listening to something, I am listening to it right now.',
+
   'contact.title': 'Contact',
   'contact.lead': "Let's build something",
   'contact.body':
@@ -100,6 +105,7 @@ const en = {
 
   'a11y.live': 'Live on Twitch',
   'a11y.playing': 'Now playing on Spotify',
+  'a11y.activity': 'What I have open right now',
   '404.title': 'Signal lost',
   '404.body': 'That route does not exist. The grid does.',
   '404.home': 'Back to the surface',
@@ -112,6 +118,7 @@ const pt: Record<keyof typeof en, string> = {
   'nav.skills': 'Skills',
   'nav.snake': 'Cobrinha',
   'nav.terminal': 'Terminal',
+  'nav.now': 'Agora',
   'nav.contact': 'Contato',
   'nav.menu': 'Menu',
   'nav.theme': 'Alternar tema',
@@ -175,6 +182,10 @@ const pt: Record<keyof typeof en, string> = {
   'terminal.title': 'Terminal',
   'terminal.lead': 'Digite <code>help</code>. Tem coisa aqui que não está no menu.',
 
+  'now.title': 'Agora',
+  'now.lead':
+    'Direto da minha presença no Discord, empurrado por socket. Se está escrito que eu estou ouvindo alguma coisa, eu estou ouvindo agora.',
+
   'contact.title': 'Contato',
   'contact.lead': 'Vamos construir algo',
   'contact.body':
@@ -202,6 +213,7 @@ const pt: Record<keyof typeof en, string> = {
 
   'a11y.live': 'Ao vivo na Twitch',
   'a11y.playing': 'Ouvindo agora no Spotify',
+  'a11y.activity': 'O que eu estou com aberto agora',
   '404.title': 'Sinal perdido',
   '404.body': 'Essa rota não existe. O grid existe.',
   '404.home': 'Voltar à superfície',

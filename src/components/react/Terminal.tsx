@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { commands, commandNames, type CommandResult } from '../../data/terminal';
+import { commands, commandNames, nowLines, type CommandResult } from '../../data/terminal';
 import { profile } from '../../data/profile';
 import { localizePath, type Lang } from '../../i18n/ui';
 import { play } from '../../lib/sound';
 import { toggleTheme } from '../../lib/theme';
+import { awaitPresence } from '../../lib/presence';
 import MatrixRain from './MatrixRain';
 
 type Line = { id: number; text: string; kind: 'in' | 'out' | 'error' | 'warn' | 'ok' };
@@ -31,6 +32,16 @@ export default function Terminal({ lang }: { lang: Lang }) {
   const cursor = useRef(-1);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  /* Cancellers for anything still waiting on data when the island unmounts. */
+  const pending = useRef<Set<() => void>>(new Set());
+
+  useEffect(
+    () => () => {
+      pending.current.forEach((cancel) => cancel());
+      pending.current.clear();
+    },
+    [],
+  );
 
   const push = useCallback((text: string, kind: Line['kind'] = 'out') => {
     setLines((prev) => [...prev, { id: uid++, text, kind }]);
@@ -65,6 +76,17 @@ export default function Terminal({ lang }: { lang: Lang }) {
         case 'cv':
           window.open(profile.cv[lang], '_blank', 'noopener');
           break;
+        case 'now': {
+          // Deliberately does not scroll to #now — you asked in the terminal,
+          // you get the answer in the terminal.
+          if (result.arg !== 'await') break;
+          const cancel = awaitPresence((s) => {
+            pending.current.delete(cancel);
+            nowLines(s, lang).forEach((line) => push(line));
+          });
+          pending.current.add(cancel);
+          break;
+        }
         case 'lang':
           location.href = result.arg === 'pt' ? '/pt/' : '/';
           break;

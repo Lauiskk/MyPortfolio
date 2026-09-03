@@ -33,11 +33,23 @@ export const GET: APIRoute = async () => {
     const data = await res.json();
     if (!data?.is_playing || !data.item) return json({ playing: false }, 30);
 
+    // Send the absolute start, not progress_ms. This response is cached at the
+    // edge for 30s, and an elapsed offset would be that much too small by the
+    // time a client read it; an absolute epoch is correct for the whole window.
+    // A pause or a seek still invalidates it until the cache turns over, which
+    // is the accepted cost of the degraded path.
+    const startedAt = Date.now() - (data.progress_ms ?? 0);
+
     return json(
       {
         playing: true,
         track: data.item.name,
         artist: (data.item.artists ?? []).map((a: { name: string }) => a.name).join(', '),
+        album: data.item.album?.name ?? null,
+        art: data.item.album?.images?.[0]?.url ?? null,
+        trackId: data.item.id ?? null,
+        startedAt,
+        endsAt: data.item.duration_ms ? startedAt + data.item.duration_ms : null,
         url: data.item.external_urls?.spotify ?? 'https://open.spotify.com',
       },
       30,

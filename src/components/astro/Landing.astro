@@ -9,10 +9,13 @@ import Contact from './Contact.astro';
 import SkillsConstellation from '../react/SkillsConstellation.tsx';
 import SnakeGrid from '../react/SnakeGrid.tsx';
 import Terminal from '../react/Terminal.tsx';
+import NowPanel from '../react/NowPanel.tsx';
+import { nowEnabled } from '../../lib/env';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+const showNow = nowEnabled();
 ---
 <Hero lang={lang} />
 <About lang={lang} />
@@ -33,4 +36,11 @@ const t = useTranslations(lang);
   <Terminal client:visible lang={lang} />
 </Section>
 
-<Contact lang={lang} />
+{showNow && (
+  <Section id="now" index="07" title={t('now.title')} accent="purple">
+    <p class="mb-8 max-w-2xl text-[var(--ink-2)]">{t('now.lead')}</p>
+    <NowPanel client:visible lang={lang} />
+  </Section>
+)}
+
+<Contact lang={lang} index={showNow ? '08' : '07'} />

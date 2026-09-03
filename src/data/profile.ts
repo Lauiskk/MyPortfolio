@@ -7,6 +7,13 @@ export type Localized = { en: string; pt: string };
 export const GITHUB_USER = 'Lauiskk';
 export const TWITCH_USER = 'lauiskkj';
 
+/**
+ * Powers the NOW section via Lanyard. Public data, not a secret — it is on
+ * every message you have ever sent. Requires the account to be a member of
+ * https://discord.gg/lanyard; leave it empty and the section is not built.
+ */
+export const DISCORD_USER_ID: string = '';
+
 export const profile = {
   name: 'Luis Felipe Ribeiro Vieira',
   shortName: 'Luis Felipe R. Vieira',

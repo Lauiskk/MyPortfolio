@@ -334,6 +334,12 @@
   0%   { transform: translateY(-100%); }
   100% { transform: translateY(400%); }
 }
+/* Equaliser bars — the nav badge and the NOW panel both draw them, so the
+   keyframe lives here instead of being injected twice by two React islands. */
+@keyframes eq {
+  from { height: 25%; }
+  to   { height: 100%; }
+}
 @keyframes glitch-x {
   0%, 100%       { transform: translate(0); }
   20%            { transform: translate(-2px, 1px); }
@@ -345,6 +351,7 @@
 .animate-blink { animation: blink 1s steps(2) infinite; }
 .animate-pulse-dot { animation: pulse-dot 2s ease-out infinite; }
 .animate-float { animation: float-y 6s ease-in-out infinite; }
+.animate-eq { animation: eq 0.9s ease-in-out infinite alternate; }
 
 /* Chromatic split on hover — cheap, and unmistakably cyberpunk. */
 .glitch-hover:hover {

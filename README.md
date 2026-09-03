@@ -34,11 +34,12 @@ when its credentials are missing — clone it, run it, and nothing is broken.
 | **Parallax hero** | Three procedurally generated skyline layers, each scrubbed by scroll *and* damped pointer movement, over a hand-rolled particle network. |
 | **Horizontal experience rail** | Four roles on a pinned track that scrubs sideways. Collapses to a vertical timeline below `lg` and under `prefers-reduced-motion`. |
 | **Playable snake** | The real contribution calendar via the GitHub GraphQL API, drawn to canvas. It grazes on its own, or you take the controls. High score in `localStorage`. |
-| **Terminal** | 20 commands plus 6 unlisted ones. History, Tab completion, and a `matrix` you will want to leave running. |
+| **Terminal** | 21 commands plus 6 unlisted ones. History, Tab completion, and a `matrix` you will want to leave running. |
 | **Skills constellation** | Orbital map instead of invented percentages — every node says *where* the skill was actually used. |
 | **⌘K palette** | Jump to any section, open any project, flip the theme or the language. |
 | **3D hologram** | React Three Fiber, desktop only, behind `client:media` — never downloaded on a phone. |
-| **Live badges** | A pulsing Twitch badge while streaming, otherwise the current Spotify track. |
+| **Live presence** | A Discord presence socket driving a NOW section: what I am listening to with album art and a progress bar that actually advances, what I have open with its rich-presence detail, and the Twitch LIVE state. Falls back to the Spotify API when Discord is closed. |
+| **Live badges** | The same socket, condensed into a nav pill. One connection serves both. |
 | **Konami code** | ↑↑↓↓←→←→BA. |
 
 ## Running it
@@ -63,6 +64,12 @@ cleanly rather than erroring — the site is fully functional on a bare deploy.
 | `TWITCH_CLIENT_ID` / `TWITCH_CLIENT_SECRET` | The LIVE badge | Badge never renders |
 | `SPOTIFY_CLIENT_ID` / `SPOTIFY_CLIENT_SECRET` / `SPOTIFY_REFRESH_TOKEN` | Now-playing badge | Badge never renders |
 | `RESEND_API_KEY`, `CONTACT_TO_EMAIL` | Contact form | Form is hidden; the mailto link remains |
+| `PUBLIC_VIGIL_URL` | Live streaming in the Vigil case study | The panel replays a recorded run and says so |
+
+Discord presence needs no key at all: set `DISCORD_USER_ID` in
+`src/data/profile.ts` — a Discord id is public — and join
+[discord.gg/lanyard](https://discord.gg/lanyard) with that account. Leave it
+empty and the NOW section is never built.
 
 ```bash
 cp .env.example .env
@@ -76,8 +83,9 @@ node scripts/spotify-token.mjs   # one-time, prints SPOTIFY_REFRESH_TOKEN
 | `help` | `whoami` | `about` | `skills` |
 | `experience` | `education` | `projects` | `open <project>` |
 | `contact` | `social` | `resume` | `neofetch` |
-| `snake` | `matrix` | `theme` | `lang en\|pt` |
-| `ls` | `pwd` | `date` | `clear` |
+| `snake` | `now` | `matrix` | `theme` |
+| `lang en\|pt` | `ls` | `pwd` | `date` |
+| `clear` | | | |
 
 Six more are not in `help`. `sudo` is a good place to start.
 
@@ -90,7 +98,7 @@ src/
 ├─ components/
 │  ├─ astro/     server-rendered sections (zero JS shipped)
 │  └─ react/     the interactive islands only
-├─ lib/          motion · particles · scramble · cursor · sound · theme · konami
+├─ lib/          motion · particles · scramble · cursor · sound · theme · konami · presence
 ├─ pages/
 │  ├─ api/       github · contributions · twitch · spotify · contact
 │  └─ projects/  case studies, EN and PT

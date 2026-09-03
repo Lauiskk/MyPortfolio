@@ -3,12 +3,14 @@ import { useTranslations, alternateFor, localizePath, type Lang } from '../../i1
 import { profile } from '../../data/profile';
 import LiveBadge from '../react/LiveBadge.tsx';
 import CommandPalette from '../react/CommandPalette.tsx';
+import { nowEnabled } from '../../lib/env';
 
 interface Props { lang: Lang }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
 const alt = alternateFor(Astro.url, lang);
 const home = localizePath('/', lang);
+const showNow = nowEnabled();
 
 const links = [
   { id: 'about', label: t('nav.about') },
@@ -17,6 +19,7 @@ const links = [
   { id: 'skills', label: t('nav.skills') },
   { id: 'snake', label: t('nav.snake') },
   { id: 'terminal', label: t('nav.terminal') },
+  ...(showNow ? [{ id: 'now', label: t('nav.now') }] : []),
   { id: 'contact', label: t('nav.contact') },
 ];
 ---
@@ -25,7 +28,7 @@ const links = [
   class="fixed inset-x-0 top-0 z-[9000] border-b border-transparent transition-[background-color,border-color,transform] duration-500"
   data-nav
 >
-  <nav class="mx-auto flex h-[68px] max-w-[1240px] items-center gap-6 px-5" aria-label="Primary">
+  <nav class="mx-auto flex h-[68px] max-w-[1240px] items-center gap-5 px-5" aria-label="Primary">
     <a href={home} class="group flex items-baseline gap-2" data-cursor-label="home">
       <span class="font-display text-2xl font-black tracking-tight text-[var(--accent)] glitch-hover">
         {profile.initials}
@@ -38,17 +41,16 @@ const links = [
     <LiveBadge client:idle lang={lang} />
 
     <ul class="ml-auto hidden items-center gap-1 lg:flex">
-      {links.map((l, i) => (
+      {links.map((l) => (
         <li>
           <a
             href={`${home === '/' ? '' : home}#${l.id}`}
             data-navlink={l.id}
-            class="group relative block px-3 py-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-[var(--ink-2)] transition-colors hover:text-[var(--accent)]"
+            class="group relative block px-2.5 py-2 font-mono text-[0.72rem] uppercase tracking-[0.14em] text-[var(--ink-2)] transition-colors hover:text-[var(--accent)]"
           >
-            <span class="text-[var(--accent)] opacity-50">0{i + 1}.</span>
             <span>{l.label}</span>
             <span
-              class="absolute inset-x-3 -bottom-px h-px origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 group-hover:scale-x-100"
+              class="absolute inset-x-2.5 -bottom-px h-px origin-left scale-x-0 bg-[var(--accent)] transition-transform duration-300 group-hover:scale-x-100"
               aria-hidden="true"></span>
           </a>
         </li>
@@ -119,7 +121,7 @@ const links = [
   </div>
 </header>
 
-<CommandPalette client:idle lang={lang} />
+<CommandPalette client:idle lang={lang} showNow={showNow} />
 
 <style>
   .nav-icon {

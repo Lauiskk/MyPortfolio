@@ -4,8 +4,9 @@ import { experience } from './experience';
 import { skillGroups } from './skills';
 import { projects } from './projects';
 import { loc } from '../i18n/ui';
+import { currentTrack, getSnapshot, type State } from '../lib/presence';
 
-export type Effect = 'clear' | 'matrix' | 'theme' | 'snake' | 'lang' | 'exit' | 'cv';
+export type Effect = 'clear' | 'matrix' | 'theme' | 'snake' | 'lang' | 'exit' | 'cv' | 'now';
 
 export type CommandResult = {
   lines: string[];
@@ -22,6 +23,62 @@ export type Command = {
 };
 
 const box = (title: string, rows: string[]) => [`┌─ ${title} ${'─'.repeat(Math.max(0, 44 - title.length))}`, ...rows.map((r) => `│ ${r}`), `└${'─'.repeat(48)}`];
+
+/**
+ * A still frame of the presence store, which is the right shape for a
+ * transcript: a line that kept ticking after it was printed would be a lie
+ * about when it was printed. Exported so Terminal.tsx can print the same
+ * frame once the store warms up on a cold load.
+ */
+export function nowLines(s: State, lang: Lang): string[] {
+  const track = currentTrack(s);
+  const activity = s.presence?.activity ?? null;
+  const rows: string[] = [];
+
+  if (s.presence) {
+    const where = [
+      s.presence.onDesktop && 'desktop',
+      s.presence.onMobile && (lang === 'pt' ? 'celular' : 'mobile'),
+      s.presence.onWeb && 'web',
+    ].filter(Boolean);
+    rows.push(`discord     ${s.presence.status}${where.length ? ` · ${where.join(' · ')}` : ''}`);
+  }
+
+  if (s.twitch) {
+    rows.push(`twitch      ${lang === 'pt' ? 'ao vivo' : 'live'}${s.twitch.game ? ` · ${s.twitch.game}` : ''}`);
+  }
+
+  if (track) {
+    rows.push(`${lang === 'pt' ? 'ouvindo   ' : 'listening '}  ${track.song} — ${track.artist}`);
+    if (track.start !== null && track.end !== null && track.end > track.start) {
+      const span = track.end - track.start;
+      const done = Math.min(Math.max(Date.now() - track.start, 0), span);
+      rows.push(`            ${mmss(done)} / ${mmss(span)}  ${meter(done / span)}`);
+    }
+  }
+
+  if (activity) {
+    rows.push(`${lang === 'pt' ? 'rodando   ' : 'running   '}  ${activity.name}`);
+    const detail = [activity.details, activity.state].filter(Boolean).join(' · ');
+    if (detail) rows.push(`            ${detail}`);
+  }
+
+  if (rows.length === 0) {
+    rows.push(lang === 'pt' ? 'nada acontecendo por aqui agora.' : 'nothing going on here right now.');
+  }
+
+  return box('NOW', rows);
+}
+
+const mmss = (ms: number) => {
+  const total = Math.max(0, Math.floor(ms / 1000));
+  return `${Math.floor(total / 60)}:${String(total % 60).padStart(2, '0')}`;
+};
+
+const meter = (ratio: number) => {
+  const filled = Math.round(Math.min(1, Math.max(0, ratio)) * 14);
+  return `${'█'.repeat(filled)}${'░'.repeat(14 - filled)}`;
+};
 
 export const commands: Command[] = [
   {
@@ -165,6 +222,23 @@ export const commands: Command[] = [
     run: (lang) => ({ lines: [lang === 'pt' ? 'Iniciando a cobrinha…' : 'Booting the snake…'], effect: 'snake' }),
   },
   {
+    name: 'now',
+    help: { en: 'What I am doing right now', pt: 'O que eu estou fazendo agora' },
+    run: (lang) => {
+      const s = getSnapshot();
+      // The nav badge mounts client:idle on every page, so the store is
+      // normally already warm. On a cold load the effect waits for one frame.
+      if (s.conn === 'idle' || s.conn === 'connecting') {
+        return {
+          lines: [lang === 'pt' ? 'Lendo presença…' : 'Reading presence…'],
+          effect: 'now',
+          arg: 'await',
+        };
+      }
+      return { lines: nowLines(s, lang), effect: 'now' };
+    },
+  },
+  {
     name: 'matrix',
     help: { en: 'Follow the white rabbit', pt: 'Siga o coelho branco' },
     run: () => ({ lines: ['Wake up…'], effect: 'matrix' }),
@@ -185,7 +259,7 @@ export const commands: Command[] = [
     },
   },
   { name: 'ls', help: { en: 'List sections', pt: 'Lista as seções' },
-    run: () => ({ lines: ['about/  experience/  projects/  skills/  snake/  contact/  cv.pdf'] }) },
+    run: () => ({ lines: ['about/  experience/  projects/  skills/  snake/  now/  contact/  cv.pdf'] }) },
   { name: 'pwd', help: { en: 'Where am I', pt: 'Onde eu estou' }, run: () => ({ lines: ['/home/luis/portfolio'] }) },
   { name: 'date', help: { en: 'Current time', pt: 'Hora atual' }, run: () => ({ lines: [new Date().toString()] }) },
   { name: 'clear', help: { en: 'Clear the screen', pt: 'Limpa a tela' }, run: () => ({ lines: [], effect: 'clear' }) },

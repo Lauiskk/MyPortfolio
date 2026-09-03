@@ -13,7 +13,7 @@ type Item = {
 };
 
 /** ⌘K / Ctrl+K. Navigation, theme, language, CV, and every project. */
-export default function CommandPalette({ lang }: { lang: Lang }) {
+export default function CommandPalette({ lang, showNow = false }: { lang: Lang; showNow?: boolean }) {
   const t = useTranslations(lang);
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
@@ -40,7 +40,11 @@ export default function CommandPalette({ lang }: { lang: Lang }) {
       });
     };
 
-    const sections = ['about', 'experience', 'projects', 'skills', 'snake', 'terminal', 'contact'].map((id) => ({
+    const ids = ['about', 'experience', 'projects', 'skills', 'snake', 'terminal'];
+    if (showNow) ids.push('now');
+    ids.push('contact');
+
+    const sections = ids.map((id) => ({
       id: `go-${id}`,
       label: t(`nav.${id}` as never),
       group: t('palette.sections'),
@@ -84,7 +88,7 @@ export default function CommandPalette({ lang }: { lang: Lang }) {
     }));
 
     return [...sections, ...actions, ...projectItems];
-  }, [lang, t, close]);
+  }, [lang, t, close, showNow]);
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();

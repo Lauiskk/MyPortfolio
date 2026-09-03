@@ -1,3 +1,5 @@
+import { DISCORD_USER_ID } from '../data/profile';
+
 /**
  * Server-side secrets. Astro exposes non-PUBLIC_ vars on `import.meta.env`;
  * Vercel functions see them on `process.env`. Check both so the same code
@@ -8,6 +10,13 @@ export function env(name: string): string | undefined {
   if (fromMeta) return fromMeta;
   return typeof process !== 'undefined' ? process.env?.[name] : undefined;
 }
+
+/**
+ * The NOW section needs at least one source it can actually reach. Discord is
+ * a build-time constant; Spotify is a server secret. With neither, the section
+ * is not built at all — same contract as every other feature here.
+ */
+export const nowEnabled = () => Boolean(DISCORD_USER_ID || env('SPOTIFY_CLIENT_ID'));
 
 export const json = (data: unknown, seconds = 0) =>
   new Response(JSON.stringify(data), {
