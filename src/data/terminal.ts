@@ -259,7 +259,7 @@ export const commands: Command[] = [
     },
   },
   { name: 'ls', help: { en: 'List sections', pt: 'Lista as seções' },
-    run: () => ({ lines: ['about/  experience/  projects/  skills/  snake/  now/  contact/  cv.pdf'] }) },
+    run: () => ({ lines: ['about/  experience/  projects/  system/  skills/  snake/  terminal/  now/  contact/  cv.pdf'] }) },
   { name: 'pwd', help: { en: 'Where am I', pt: 'Onde eu estou' }, run: () => ({ lines: ['/home/luis/portfolio'] }) },
   { name: 'date', help: { en: 'Current time', pt: 'Hora atual' }, run: () => ({ lines: [new Date().toString()] }) },
   { name: 'clear', help: { en: 'Clear the screen', pt: 'Limpa a tela' }, run: () => ({ lines: [], effect: 'clear' }) },

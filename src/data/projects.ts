@@ -79,6 +79,85 @@ export const projects: Project[] = [
     accent: 'magenta',
   },
   {
+    slug: 'clearing',
+    repo: 'clearing',
+    visibility: 'public',
+    name: 'Clearing',
+    tagline: {
+      en: 'A ledger whose invariants live in the database',
+      pt: 'Um ledger cujas invariantes vivem no banco',
+    },
+    description: {
+      en: 'Double-entry accounting in Elixir, with a process per account serving as the lock manager. Money is an integer count of minor units and nothing else, entries are append-only, and the rule that a transaction sums to zero is enforced by Postgres at COMMIT rather than by the code above it.',
+      pt: 'Contabilidade de partidas dobradas em Elixir, com um processo por conta funcionando como gerenciador de locks. Dinheiro é uma contagem inteira de unidades menores e nada mais, os lançamentos são somente-inserção, e a regra de que uma transação soma zero é imposta pelo Postgres no COMMIT, não pelo código acima dele.',
+    },
+    body: {
+      en: 'Three invariants are enforced *in Postgres*, so they hold for a migration, a psql session and any service written later. The entries of a transaction sum to zero per currency, checked once at COMMIT by a deferred constraint trigger — deferred because every intermediate state of a transfer is unbalanced, and an eager check would reject every correct posting. An entry\'s currency must match the account it lands on. A customer balance may not go negative, while the system\'s own accounts must be able to, which is what it means to owe someone money.\n\nConcurrency is a process per account, started on demand, holding its balance in memory. A posting sorts the account ids before acquiring, so every posting in the system takes its locks in the same global order and two of them can never each hold what the other wants — one line, and it is the whole deadlock-freedom argument. A holder that crashes is released by a monitor; a caller that gives up waiting takes its own grant back. An ADR argues why this is a process rather than *SELECT … FOR UPDATE*, including what it costs, because OTP removing the registry and the restart semantics does not remove having to decide the lock ordering.\n\nThe balances table is a cache of the entries, and a reconciliation query exists to prove it — asserted to return nothing after arbitrary concurrent load, which is what makes the cache safe to read from. Twenty concurrent requests against a ten-thousand balance, a thousand each: exactly ten post, exactly ten are refused, and the balance lands on zero. A property test asserts that no random sequence of transfers changes the ledger\'s total.\n\n*Phase 1 of 8.* The ledger is finished and stands on its own; the service registry, the edge, the risk scorer and the saga orchestrator are not built yet. The README says which is which rather than describing the finished shape as though it existed.',
+      pt: 'Três invariantes são impostas *no Postgres*, então valem para uma migration, uma sessão psql e qualquer serviço escrito depois. Os lançamentos de uma transação somam zero por moeda, verificado uma vez no COMMIT por um constraint trigger adiado — adiado porque todo estado intermediário de uma transferência está desbalanceado, e uma checagem ansiosa rejeitaria todo lançamento correto. A moeda de um lançamento tem que bater com a da conta em que ele cai. O saldo de um cliente não pode ficar negativo, enquanto as contas do próprio sistema precisam poder, que é o que significa dever dinheiro a alguém.\n\nA concorrência é um processo por conta, iniciado sob demanda, guardando o saldo em memória. Um lançamento ordena os ids das contas antes de adquirir, então todo lançamento do sistema pega seus locks na mesma ordem global e dois deles nunca podem segurar cada um o que o outro quer — uma linha, e é o argumento inteiro de ausência de deadlock. Um detentor que morre é liberado por um monitor; quem desiste de esperar devolve o próprio direito. Um ADR defende por que isso é um processo e não *SELECT … FOR UPDATE*, incluindo o que custa, porque o OTP tirar o registro e a semântica de restart não tira ter que decidir a ordem dos locks.\n\nA tabela de saldos é um cache dos lançamentos, e existe uma query de reconciliação para provar isso — verificada como vazia depois de carga concorrente arbitrária, que é o que torna o cache seguro de ler. Vinte requisições concorrentes contra um saldo de dez mil, mil cada: exatamente dez passam, exatamente dez são recusadas, e o saldo para em zero. Um teste de propriedade garante que nenhuma sequência aleatória de transferências muda o total do ledger.\n\n*Fase 1 de 8.* O ledger está pronto e se sustenta sozinho; o registro de serviços, o edge, o avaliador de risco e o orquestrador de saga ainda não existem. O README diz qual é qual em vez de descrever a forma final como se ela já estivesse lá.',
+    },
+    why: {
+      en: 'Elixir sits at the top of my CV backed by a one-sentence stub and two repositories nobody can open. This is that claim as code — and the interesting part is not the language, it is putting the rules that matter somewhere the application cannot get them wrong.',
+      pt: 'Elixir está no topo do meu CV apoiado por um projeto de uma frase e dois repositórios que ninguém consegue abrir. Este é esse argumento como código — e a parte interessante não é a linguagem, é colocar as regras que importam onde a aplicação não consegue errar.',
+    },
+    tech: ['Elixir', 'Phoenix', 'OTP', 'Ecto', 'PostgreSQL', 'Golang', 'Docker', 'Terraform'],
+    category: 'backend',
+    featured: true,
+    live: null,
+    diagram: `  built ────────────────────────────────────────────────────────────────────
+  POST /v1/transfers ──▶ ledger (Elixir) ──▶ ledger_db
+                         a process per account, locks taken in sorted order
+                         entries are append-only; balances are a cache of them
+
+  enforced in the database, not in the application:
+     sum(entries) = 0 per currency    deferred trigger, checked at COMMIT
+     entry currency = account currency
+     a customer balance may not go negative; house accounts must be able to
+
+  planned ──────────────────────────────────────────────────────────────────
+  edge (Go) · risk (Go) · orchestrator (Elixir, saga) · control (Elixir, registry)`,
+    accent: 'purple',
+  },
+  {
+    slug: 'gantry',
+    repo: 'gantry',
+    visibility: 'public',
+    name: 'Gantry',
+    tagline: {
+      en: 'A cluster built to be broken on purpose',
+      pt: 'Um cluster feito para ser quebrado de propósito',
+    },
+    description: {
+      en: 'The platform the other two run on: namespaces with quotas and default-deny network policy, admission policies that ship with a test suite, and images pinned by digest. Its workloads are not toys built to be orchestrated — they are Vigil and Clearing.',
+      pt: 'A plataforma onde os outros dois rodam: namespaces com quotas e network policy default-deny, políticas de admissão que vêm com suíte de testes, e imagens fixadas por digest. Suas cargas de trabalho não são brinquedos feitos para serem orquestrados — são o Vigil e o Clearing.',
+    },
+    body: {
+      en: 'A Kubernetes portfolio project is usually a Deployment, a Service and a screenshot of *kubectl get pods*. That demonstrates nothing, because nothing was ever asked of it. This one is built to be broken under load with a client counting: delete a pod, drain a node, roll a deploy, kill a broker — how many requests did the platform lose, and which specific setting changed that number?\n\nThe admission policies ship with fixtures: one compliant pod and six copies of it with exactly one thing wrong each, so a failing test names a single policy. They run offline in CI on every push. Two subtleties came out of writing them. The namespace LimitRange deliberately sets bounds but *no defaults* — LimitRanger is a mutating admission plugin and runs before any validating webhook, so a defaultRequest would quietly fill in the resources the policy exists to demand. And JMESPath\'s *||* returns its right-hand side whenever the left is falsy, and false is falsy, so the first version of the privilege policy admitted a pod with a writable root filesystem. The test caught it.\n\nRunning Vigil for real needed three changes sent back to it, and none were visible from inside that repository. It had no readiness endpoint at all: its processor rebuilds a window store from a compacted changelog on every rebalance, and until that finishes it owns partitions with no history, so every stateful rule quietly reports nothing — from a pod Kubernetes believed was working. Nobody finds that by reading code.\n\n*Phase 2 of 9.* The cluster definition, the policies and the images are done. Argo CD, the observability stack and the chaos measurements are not. An ADR states plainly what k3d cannot show — no cloud load balancer, no multi-AZ, no IAM, no EBS — before anyone has to ask, and the EKS Terraform is written in full and has never been applied, because EKS has no free tier.',
+      pt: 'Um projeto de Kubernetes em portfólio costuma ser um Deployment, um Service e um print do *kubectl get pods*. Isso não demonstra nada, porque nada foi exigido dele. Este foi feito para ser quebrado sob carga com um cliente contando: apague um pod, drene um nó, faça um rollout, mate um broker — quantas requisições a plataforma perdeu, e qual configuração específica mudou esse número?\n\nAs políticas de admissão vêm com fixtures: um pod em conformidade e seis cópias dele com exatamente uma coisa errada cada, então um teste que falha aponta uma única política. Rodam offline no CI a cada push. Duas sutilezas saíram de escrevê-las. O LimitRange do namespace define limites mas *nenhum default* de propósito — o LimitRanger é um plugin de admissão que muta e roda antes de qualquer webhook de validação, então um defaultRequest preencheria silenciosamente os recursos que a política existe para exigir. E o *||* do JMESPath devolve o lado direito sempre que o esquerdo é falsy, e false é falsy, então a primeira versão da política de privilégios aceitou um pod com raiz gravável. O teste pegou.\n\nRodar o Vigil de verdade exigiu três mudanças devolvidas a ele, e nenhuma era visível de dentro daquele repositório. Ele não tinha endpoint de readiness nenhum: o processador reconstrói uma janela de estado a partir de um changelog compactado a cada rebalanceamento, e até isso terminar ele detém partições sem histórico, então toda regra com estado silenciosamente não reporta nada — de um pod que o Kubernetes considerava saudável. Ninguém descobre isso lendo código.\n\n*Fase 2 de 9.* A definição do cluster, as políticas e as imagens estão prontas. Argo CD, a stack de observabilidade e as medições de caos não. Um ADR diz abertamente o que o k3d não consegue mostrar — sem load balancer de nuvem, sem multi-AZ, sem IAM, sem EBS — antes de alguém precisar perguntar, e o Terraform do EKS está escrito por inteiro e nunca foi aplicado, porque EKS não tem free tier.',
+    },
+    why: {
+      en: 'Kubernetes is joint-highest on my CV, and a search for *kind: Deployment* across everything I had written returned zero files. This is the first project evidence that claim has ever had — and it is deliberately the kind that can fail a test.',
+      pt: 'Kubernetes é uma das notas mais altas do meu CV, e uma busca por *kind: Deployment* em tudo que eu tinha escrito retornou zero arquivos. Esta é a primeira evidência em projeto que essa afirmação já teve — e é de propósito do tipo que pode reprovar em um teste.',
+    },
+    tech: ['Kubernetes', 'Helm', 'k3d', 'Kyverno', 'Argo CD', 'Prometheus', 'Terraform', 'Docker'],
+    category: 'infra',
+    featured: true,
+    live: null,
+    diagram: `  built ────────────────────────────────────────────────────────────────────
+  k3d: 1 server + 3 agents        namespaces  quota · limit range · net policy
+       three, because drain and               restricted pod security
+       spread mean nothing on one             default-deny, both directions
+
+  Kyverno   declare your resources · pin the image tag · declare your probes
+            no writable root, no root user, no retained capabilities
+            each with a fixture that MUST be rejected, asserted in CI
+
+  ghcr.io/lauiskk/vigil-*   five images, pinned by digest, built by vigil CI
+
+  planned ──────────────────────────────────────────────────────────────────
+  vigil on the cluster · Argo CD · Prometheus · chaos runs · EKS in Terraform`,
+    accent: 'blue',
+  },
+  {
     slug: 'ascension',
     repo: 'ascension',
     visibility: 'private',

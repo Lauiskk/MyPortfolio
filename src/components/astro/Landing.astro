@@ -4,6 +4,7 @@ import Hero from './Hero.astro';
 import About from './About.astro';
 import ExperienceRail from './ExperienceRail.astro';
 import Projects from './Projects.astro';
+import SystemSection from './SystemSection.astro';
 import Section from './Section.astro';
 import Contact from './Contact.astro';
 import SkillsConstellation from '../react/SkillsConstellation.tsx';
@@ -22,25 +23,27 @@ const showNow = nowEnabled();
 <ExperienceRail lang={lang} />
 <Projects lang={lang} />
 
-<Section id="skills" index="04" title={t('skills.title')} accent="blue">
+<SystemSection lang={lang} index="04" />
+
+<Section id="skills" index="05" title={t('skills.title')} accent="blue">
   <SkillsConstellation client:visible lang={lang} />
 </Section>
 
-<Section id="snake" index="05" title={t('snake.title')} accent="magenta">
+<Section id="snake" index="06" title={t('snake.title')} accent="magenta">
   <p class="mb-8 max-w-2xl text-[var(--ink-2)]">{t('snake.lead')}</p>
   <SnakeGrid client:visible lang={lang} />
 </Section>
 
-<Section id="terminal" index="06" title={t('terminal.title')} accent="cyan">
+<Section id="terminal" index="07" title={t('terminal.title')} accent="cyan">
   <p class="mb-6 max-w-2xl text-[var(--ink-2)]" set:html={t('terminal.lead')}></p>
   <Terminal client:visible lang={lang} />
 </Section>
 
 {showNow && (
-  <Section id="now" index="07" title={t('now.title')} accent="purple">
+  <Section id="now" index="08" title={t('now.title')} accent="purple">
     <p class="mb-8 max-w-2xl text-[var(--ink-2)]">{t('now.lead')}</p>
     <NowPanel client:visible lang={lang} />
   </Section>
 )}
 
-<Contact lang={lang} index={showNow ? '08' : '07'} />
+<Contact lang={lang} index={showNow ? '09' : '08'} />

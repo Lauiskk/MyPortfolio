@@ -37,6 +37,10 @@ const en = {
   'exp.hint': 'Scroll to move along the line',
   'exp.present': 'Present',
 
+  'nav.system': 'System',
+  'system.built': 'running',
+  'system.designed': 'designed, not running',
+  'system.open': 'Case study',
   'projects.title': 'Projects',
   'projects.all': 'All',
   'projects.backend': 'Backend',
@@ -145,6 +149,10 @@ const pt: Record<keyof typeof en, string> = {
   'exp.hint': 'Role para andar pela linha',
   'exp.present': 'Atual',
 
+  'nav.system': 'Sistema',
+  'system.built': 'rodando',
+  'system.designed': 'desenhado, não rodando',
+  'system.open': 'Estudo de caso',
   'projects.title': 'Projetos',
   'projects.all': 'Todos',
   'projects.backend': 'Backend',

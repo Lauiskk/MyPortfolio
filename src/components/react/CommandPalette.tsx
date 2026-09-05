@@ -40,7 +40,7 @@ export default function CommandPalette({ lang, showNow = false }: { lang: Lang; 
       });
     };
 
-    const ids = ['about', 'experience', 'projects', 'skills', 'snake', 'terminal'];
+    const ids = ['about', 'experience', 'projects', 'system', 'skills', 'snake', 'terminal'];
     if (showNow) ids.push('now');
     ids.push('contact');
 

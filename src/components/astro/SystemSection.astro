@@ -1,0 +1,131 @@
+---
+import { useTranslations, loc, localizePath, type Lang } from '../../i18n/ui';
+import { system } from '../../data/systems';
+import { projectBySlug } from '../../data/projects';
+import Section from './Section.astro';
+
+interface Props { lang: Lang; index: string }
+const { lang, index } = Astro.props;
+const t = useTranslations(lang);
+
+const planes = system.planes.map((plane) => ({
+  ...plane,
+  project: projectBySlug(plane.slug),
+}));
+
+/**
+ * The edge from clearing to vigil is designed and not built, and the diagram
+ * says so with a dashed line rather than by omitting it. Drawing every edge
+ * solid would describe a system that does not exist; drawing only the built
+ * ones would hide where this is going.
+ */
+const designed = (from: string, to: string) =>
+  !system.edges.find((e) => e.from === from && e.to === to)?.built;
+---
+<Section id="system" index={index} title={loc(system.title, lang)} accent="cyan">
+  <p class="mb-10 max-w-3xl text-[1.02rem] leading-relaxed text-[var(--ink-2)]">
+    {loc(system.thesis, lang)}
+  </p>
+
+  <div class="panel clip-corner mb-8 overflow-x-auto p-6 md:p-8">
+    <svg
+      viewBox="0 0 880 300"
+      class="mx-auto block h-auto w-full min-w-[560px] max-w-[880px]"
+      role="img"
+      aria-labelledby="system-diagram-title system-diagram-desc"
+    >
+      <title id="system-diagram-title">{loc(system.title, lang)}</title>
+      <desc id="system-diagram-desc">
+        {system.planes.map((p) => `${loc(p.role, lang)}: ${loc(p.blurb, lang)}`).join(' ')}
+      </desc>
+
+      <defs>
+        <marker id="sys-arrow" viewBox="0 0 10 10" refX="9" refY="5"
+                markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--accent)" />
+        </marker>
+      </defs>
+
+      <!-- clearing -->
+      <g>
+        <rect x="40" y="20" width="260" height="92" rx="2"
+              fill="var(--surface-2)" stroke="var(--color-purple)" stroke-width="1.5" />
+        <text x="60" y="52" class="fill-[var(--ink)] font-display text-[17px] font-bold">Clearing</text>
+        <text x="60" y="76" class="fill-[var(--ink-3)] font-mono text-[11px] uppercase tracking-[0.16em]">
+          {loc(system.planes[0].role, lang)}
+        </text>
+        <text x="60" y="96" class="fill-[var(--ink-2)] font-mono text-[11px]">ledger · saga · registry</text>
+      </g>
+
+      <!-- vigil -->
+      <g>
+        <rect x="580" y="20" width="260" height="92" rx="2"
+              fill="var(--surface-2)" stroke="var(--color-magenta)" stroke-width="1.5" />
+        <text x="600" y="52" class="fill-[var(--ink)] font-display text-[17px] font-bold">Vigil</text>
+        <text x="600" y="76" class="fill-[var(--ink-3)] font-mono text-[11px] uppercase tracking-[0.16em]">
+          {loc(system.planes[1].role, lang)}
+        </text>
+        <text x="600" y="96" class="fill-[var(--ink-2)] font-mono text-[11px]">windows · rules · alerts</text>
+      </g>
+
+      <!-- the event that connects them: designed, not running -->
+      <line x1="300" y1="66" x2="572" y2="66"
+            stroke="var(--accent)" stroke-width="1.5"
+            stroke-dasharray={designed('clearing', 'vigil') ? '6 5' : undefined}
+            marker-end="url(#sys-arrow)" />
+      <text x="436" y="54" text-anchor="middle"
+            class="fill-[var(--accent)] font-mono text-[11px]">payment.posted.v1</text>
+
+      <!-- gantry runs both -->
+      <line x1="170" y1="112" x2="170" y2="190" stroke="var(--color-blue)" stroke-width="1.5"
+            stroke-dasharray={designed('gantry', 'clearing') ? '6 5' : undefined} />
+      <line x1="710" y1="112" x2="710" y2="190" stroke="var(--color-blue)" stroke-width="1.5"
+            stroke-dasharray={designed('gantry', 'vigil') ? '6 5' : undefined} />
+
+      <rect x="40" y="190" width="800" height="80" rx="2"
+            fill="var(--surface-2)" stroke="var(--color-blue)" stroke-width="1.5" />
+      <text x="60" y="224" class="fill-[var(--ink)] font-display text-[17px] font-bold">Gantry</text>
+      <text x="60" y="248" class="fill-[var(--ink-3)] font-mono text-[11px] uppercase tracking-[0.16em]">
+        {loc(system.planes[2].role, lang)}
+      </text>
+      <text x="820" y="248" text-anchor="end" class="fill-[var(--ink-2)] font-mono text-[11px]">
+        namespaces · policy · quotas · images pinned by digest
+      </text>
+    </svg>
+
+    <p class="mt-6 flex flex-wrap items-center gap-x-6 gap-y-2 font-mono text-[0.62rem] uppercase tracking-[0.14em] text-[var(--ink-3)]">
+      <span class="flex items-center gap-2">
+        <span class="inline-block h-px w-6 bg-[var(--ink-3)]"></span>{t('system.built')}
+      </span>
+      <span class="flex items-center gap-2">
+        <span class="inline-block h-px w-6 border-t border-dashed border-[var(--ink-3)]"></span>{t('system.designed')}
+      </span>
+    </p>
+  </div>
+
+  <div class="mb-8 grid gap-5 md:grid-cols-3">
+    {planes.map((plane) => (
+      <article data-accent={plane.project?.accent ?? 'cyan'}
+               class="panel clip-corner flex flex-col p-5">
+        <h3 class="font-mono text-[0.62rem] uppercase tracking-[0.2em] text-[var(--accent)]">
+          {loc(plane.role, lang)}
+        </h3>
+        <p class="mt-1 font-display text-lg font-bold">{plane.project?.name ?? plane.slug}</p>
+        <p class="mt-3 flex-1 text-[0.9rem] leading-relaxed text-[var(--ink-2)]">
+          {loc(plane.blurb, lang)}
+        </p>
+        <p class="mt-3 border-l-2 border-dashed border-[var(--hair)] pl-3 font-mono text-[0.7rem] leading-relaxed text-[var(--ink-3)]">
+          {loc(plane.state, lang)}
+        </p>
+        <a href={localizePath(`/projects/${plane.slug}`, lang)}
+           class="mt-4 font-mono text-[0.68rem] uppercase tracking-[0.12em] text-[var(--accent)] transition-opacity hover:opacity-70">
+          {t('system.open')} →
+        </a>
+      </article>
+    ))}
+  </div>
+
+  <p class="max-w-3xl border-l-2 border-[var(--hair)] pl-4 text-[0.9rem] leading-relaxed text-[var(--ink-3)]">
+    {loc(system.caveat, lang)}
+  </p>
+</Section>
